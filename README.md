@@ -7,7 +7,7 @@ Our Project is the Classic Risk board game, with some enhancements and additions
 The game is centered over the world map in which players have to try and conquer as much of the world as they can. Players are given some infantry at the start of the game depending on the number of the players and after that each player is given extra infantry in relation to the number of countries and contents that are under their control.
 
 ## Implementation
-We will be implementing this game in React.js, as it is a framework that is versatile, powerful, and easy to learn. Also as React.js is client side rendered there will be no need for any servers or infrastructure, just a file hosting service will suffice.
+We will be implementing this game using the following technologies. React.js and Redux will be used for Frontend. React.js is powerful client-side rendering library and along with Redux as state management. Our implementation of the game will feature a Django backend and a MySQL relational database to store game data and user information. Amazon Web Services will be used as the Provider and Github Actions as CI/CD.
 
 ## Features
 Features that we are planning to implement include:
@@ -18,5 +18,5 @@ Features that we are planning to implement include:
 - The ability to save and load games
 - Custom maps
 - Blitz dice
+- A chat feature for players
 - And more to be thought of
-
