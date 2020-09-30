@@ -10,7 +10,7 @@ The game is centered over the world map in which players have to try and conquer
 We will be implementing this game in React.js, as it is a framework that is versatile, powerful, and easy to learn. Also as React.js is client side rendered there will be no need for any servers or infrastructure, just a file hosting service will suffice.
 
 ## Features
-Features that we are planning on implementing include:
+Features that we are planning to implement include:
 - The general game play rules
 - A responsive desgin that is easy to use on all screens
 - A track of current highscores
