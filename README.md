@@ -18,5 +18,4 @@ Features that we are planning to implement include:
 - The ability to save and load games
 - Custom maps
 - Blitz dice
-- A chat feature for players
 - And more to be thought of
