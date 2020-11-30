@@ -16,6 +16,6 @@ Features that we are planning to implement include:
 - A track of current highscores
 - Score board of previous players
 - The ability to save and load games
-- Custom maps
+- Custom map renditions
 - Blitz dice
-- And more to be thought of
+- And more to be thought of such as ( global domination and map specific bonuses)
