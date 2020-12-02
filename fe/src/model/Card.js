@@ -2,16 +2,16 @@
 * Risk Card that represents 1 card with a territory name and a troop name.
 */
 class Card {
-    constructor(territoryName, troopName) {
-        this.territoryName = territoryName;
-        this.troopName = troopName;
+    constructor(country, troop) {
+        this.country = country;
+        this.troop = troop;
     }
 
-    setTerritoryName(territoryName) {};
-    getTerritoryName(){}
+    setCountry(country) {};
+    getTerritoryName(){};
 
-    setTroopName(troopName) {};
-    getTroopName(troopName) {};
+    setTroop(troop) {};
+    getTroop(troop) {};
 
 };
 
