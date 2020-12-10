@@ -1,10 +1,23 @@
+.map_container {
+    svg {
+        path {
+            cursor: pointer;
+        }
+    }
+    width: 720px;
+    background-color: #88b6da;
+    border-radius: 10px;
+    position: absolute;
+    bottom: 100px;
+    right: 125px;
+}
 #eastern_australia,
 #western_australia,
 #new_guinea,
 #indonesia {
     fill: #a31aa6;
 }
-#north_africa,
+#india #north_africa,
 #south_africa,
 #congo,
 #north_africa,

@@ -12,7 +12,17 @@ class Dice {
      * @param {number} numOfDiceToRoll - The number of dices to roll. By default, the number is the maximum number of dices.
      * @return {int[]} diceRollResults - The results of the dice rolled in an array. Array length is the number of dice rolled.
      */
-    rollDice(numOfDiceToRoll = this.numOfDice) {}
+    roll(numOfDiceToRoll = this.numOfDice) {
+        if (numOfDiceToRoll <= 0) {
+            return [];
+        }
+        
+        let results = [];
+        for (let i = 0; i < numOfDiceToRoll; i++) {
+            results.push(Math.round(Math.random() * 6))
+        }
+        return results;
+    }
 
     /**
      * Set the number of dice.
@@ -29,4 +39,4 @@ class Dice {
     getNumOfDice() {}
 };
 
-export default Dice;
+module.exports = Dice;
