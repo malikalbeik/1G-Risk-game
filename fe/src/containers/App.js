@@ -3,7 +3,7 @@ import React from "react";
 const App = () => {
     return (
         <div>
-            Risk Game<div></div>
+            Risk Game
         </div>
     );
 };
