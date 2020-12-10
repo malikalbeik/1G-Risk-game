@@ -8,14 +8,3 @@
         
     }
 }
-#alberta {
-    animation: wheel 1s ease;
-}
-@keyframes wheel {
-    from {
-        transform: rotateZ(0deg);
-    }
-    to {
-        transform: rotateZ(360deg);
-    }
-}
