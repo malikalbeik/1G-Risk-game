@@ -1,0 +1,96 @@
+.title {
+  margin: 0 0 20px 48%;
+  padding: 20% 0 0 0;
+  font-size: 40px;
+}
+
+.loginButton {
+  margin-left: 47%;
+  padding: 8px 40px;
+  border: 2px solid white;
+  font-size: large;
+  font-weight: bold;
+  background-color: #1d65a8;
+  color: white;
+}
+
+.loginButton:hover {
+  box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24),
+    0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.loginButton:active {
+  background-color: #1d65a8;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+.textfields {
+  margin: 0px 0 20px 40%;
+}
+
+.field {
+  width: 40%;
+  position: relative;
+  background-color: rgb(255, 255, 255);
+}
+
+.field input::placeholder {
+  color: rgb(189, 187, 187);
+}
+
+.field input {
+  width: 100%;
+  border: 2px solid #1d65a8;
+  background: white;
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  padding: 8px 12px;
+  outline: 0;
+  font-size: large;
+  font-weight: bold;
+
+  &:focus {
+    border-color: #1d65a8;
+    background-color: white;
+  }
+
+  &:focus + label {
+    background: #1d65a8;
+    color: white;
+    font-size: 70%;
+    padding: 1px 6px;
+    z-index: 2;
+    text-transform: uppercase;
+  }
+}
+
+.field label {
+  position: absolute;
+  color: rgba(255, 255, 255, 0);
+  padding: 7px 6px;
+  top: 0px;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+.field input:focus {
+  padding: 4px 6px 20px 6px;
+}
+
+.field input:focus + label {
+  top: 100%;
+  margin-top: -16px;
+}
+
+.riskBack {
+  background-image: url("../views/back.jpg");
+  height: 800px;
+  width: auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 1400px;
+}

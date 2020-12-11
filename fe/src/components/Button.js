@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import "./board/style.scss";
+import "../components/style.scss";
 
 class Button extends Component {
   render() {
-    return <button className="riskButton"> {this.props.content} </button>;
+    return <button className="loginButton"> {this.props.content} </button>;
   }
 }
 

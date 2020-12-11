@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./board/style.scss";
+import "../components/style.scss";
 
 class TextBox extends Component {
   constructor(props) {

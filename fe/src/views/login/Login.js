@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
-import TextBox from "../TextBox";
-import Button from "../Button";
+import TextBox from "../../components/TextBox";
+import Button from "../../components/Button";
 
 class Login extends PureComponent {
   constructor(props) {
@@ -23,7 +23,7 @@ class Login extends PureComponent {
         </div>
         <div>
           {" "}
-          <Button variant="primary" size="lg" content="Login" />
+          <Button content="Login" />
         </div>
       </div>
     );
