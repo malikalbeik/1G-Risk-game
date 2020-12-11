@@ -2,14 +2,19 @@ import React, { Component } from "react";
 import "./board/style.scss";
 
 class TextBox extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state = {value:""};
+    this.state = { value: "" };
   }
   render() {
     return (
       <div className="field">
-        <input placeholder={this.props.label} type={this.props.type} value={this.state.value} onChange={e => this.setState({ value: e.target.value})}  />
+        <input
+          placeholder={this.props.label}
+          type={this.props.type}
+          value={this.state.value}
+          onChange={(e) => this.setState({ value: e.target.value })}
+        />
         <label> {this.props.label} </label>
       </div>
     );
