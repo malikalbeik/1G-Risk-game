@@ -21,3 +21,7 @@
 /fe/npm-debug.log*
 /fe/yarn-debug.log*
 /fe/yarn-error.log*
+
+/fe/.eslintcache
+/fe/.eslintcache.rej
+/fe/debug.log
