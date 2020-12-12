@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import "../components/style.scss";
+import "../Button/style.scss";
 
 class Button extends Component {
   render() {
-    return <button className="loginButton"> {this.props.content} </button>;
+    return <button className={this.props.nameClass}> {this.props.content} </button>;
   }
 }
 

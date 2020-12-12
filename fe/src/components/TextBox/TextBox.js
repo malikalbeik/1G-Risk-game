@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "../components/style.scss";
+import "../TextBox/style.scss";
 
 class TextBox extends Component {
   constructor(props) {
@@ -8,7 +8,7 @@ class TextBox extends Component {
   }
   render() {
     return (
-      <div className="field">
+      <div className= {this.props.nameClass}>
         <input
           placeholder={this.props.label}
           type={this.props.type}
