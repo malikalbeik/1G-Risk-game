@@ -8,7 +8,7 @@ class TextBox extends Component {
   }
   render() {
     return (
-      <div className= {this.props.nameClass}>
+      <div className={this.props.nameClass}>
         <input
           placeholder={this.props.label}
           type={this.props.type}
