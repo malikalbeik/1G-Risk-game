@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import NormalMap from './normalMap/NormalMap';
-import "./style.scss";
+// import "./style.scss";
 class Map extends PureComponent {
     constructor(props) {
         super(props);
@@ -11,7 +11,7 @@ class Map extends PureComponent {
     render() {
         return (
             <div>
-                <NormalMap/> 
+                <NormalMap />
             </div>
         );
     }

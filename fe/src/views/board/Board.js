@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import "./style.scss";
+// import "./style.scss";
 
 import Map from '../map/Map';
 class Board extends PureComponent {
