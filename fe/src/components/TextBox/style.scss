@@ -1,0 +1,56 @@
+.field {
+  width: 40%;
+  position: relative;
+  background-color: rgb(255, 255, 255);
+}
+
+.field input::placeholder {
+  color: rgb(189, 187, 187);
+}
+
+.field input {
+  width: 100%;
+  border: 2px solid #1d65a8;
+  background: white;
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  padding: 8px 12px;
+  outline: 0;
+  font-size: large;
+  font-weight: bold;
+
+  &:focus {
+    border-color: #1d65a8;
+    background-color: white;
+  }
+
+  &:focus + label {
+    background: #1d65a8;
+    color: white;
+    font-size: 70%;
+    padding: 1px 6px;
+    z-index: 2;
+    text-transform: uppercase;
+  }
+}
+
+.field label {
+  position: absolute;
+  color: rgba(255, 255, 255, 0);
+  padding: 7px 6px;
+  top: 0px;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+.field input:focus {
+  padding: 4px 6px 20px 6px;
+}
+
+.field input:focus + label {
+  top: 100%;
+  margin-top: -16px;
+}
