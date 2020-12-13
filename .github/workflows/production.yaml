@@ -14,7 +14,7 @@ jobs:
         
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v1
 
     - name: Set up Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
@@ -33,7 +33,6 @@ jobs:
 
     - name: Deploy to S3
       uses: jakejarvis/s3-sync-action@master
-      working-directory: ./fe
       with:
         args: --acl public-read --delete
       env:
