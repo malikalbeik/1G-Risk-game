@@ -32,8 +32,8 @@ jobs:
         yarn build
 
     - name: Deploy to S3
-      working-directory: ./fe
       uses: jakejarvis/s3-sync-action@master
+      working-directory: ./fe
       with:
         args: --acl public-read --delete
       env:
