@@ -1,8 +1,7 @@
 const PlayersSetter = require('./PlayersSetter');
 
-class GamePlay {
-    constructor() {}
 
+class Game {
     startGame() {
         // Get the following from UI
         const NUMBER_OF_PLAYERS = 3;
@@ -21,5 +20,7 @@ class GamePlay {
     }
 }
 
-const game = new GamePlay();
-game.startGame();
+const gameController = new Game();
+gameController.startGame();
+
+export default gameController;
