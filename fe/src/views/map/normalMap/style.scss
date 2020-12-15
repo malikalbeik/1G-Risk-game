@@ -1,29 +1,21 @@
-.boardContainer {
-  .map {
-    background-repeat: no-repeat;
-    height: 821px;
-    width: 1440px;
-    display: block;
-  }
-}
 .map_container {
-  svg {
-      path {
-          cursor: pointer;
-      }
-  }
-  width: 720px;
-  background-color: #88b6da;
-  border-radius: 10px;
-  position: absolute;
-  bottom: 100px;
-  right: 125px;
+    svg {
+        path {
+            cursor: pointer;
+        }
+    }
+    width: 720px;
+    background-color: #88b6da;
+    border-radius: 10px;
+    position: absolute;
+    bottom: 100px;
+    right: 125px;
 }
 #eastern_australia,
 #western_australia,
 #new_guinea,
 #indonesia {
-  fill: #a31aa6;
+    fill: #a31aa6;
 }
 #india #north_africa,
 #south_africa,
@@ -32,13 +24,13 @@
 #east_africa,
 #egypt,
 #madagascar {
-  fill: #9c7805;
+    fill: #9c7805;
 }
 #peru,
 #argentina,
 #brazil,
 #venezuela {
-  fill: #ea4224;
+    fill: #ea4224;
 }
 #central_america,
 #eastern_united_states,
@@ -49,7 +41,7 @@
 #alaska,
 #quebec,
 #greenland {
-  fill: #d9dd23;
+    fill: #d9dd23;
 }
 #southern_europe,
 #western_europe,
@@ -58,7 +50,7 @@
 #iceland,
 #scandinavia,
 #ukraine {
-  fill: #47c1dc;
+    fill: #47c1dc;
 }
 #middle_east,
 #afghanistan,
@@ -72,14 +64,16 @@
 #yakursk,
 #japan,
 #kamchatka {
-  fill: #89db8c;
+    fill: #89db8c;
 }
 .main_map {
-  position: absolute;
-  top: 1px;
+    position: absolute;
+    top: 1px;
+    // z-index: 1;
 }
 .connection_arrows {
-  position: absolute;
-  top: 44px;
-  left: 0px;
+    position: absolute;
+    top: 44px;
+    // z-index: 1000;
+    left: 0px;
 }

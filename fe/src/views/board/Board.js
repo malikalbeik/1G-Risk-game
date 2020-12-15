@@ -1,12 +1,13 @@
-import React, { PureComponent } from "react";
-// import "./style.scss";
+import React, { Component } from "react";
+import "./style.scss";
 
-import Map from '../map/Map';
-class Board extends PureComponent {
+import Map from "../map/Map";
+class Board extends Component {
     constructor(props) {
         super(props);
 
         this.state = {};
+        document.addEventListener('click', (e) => console.log(e.target.id));
     }
 
     render() {
