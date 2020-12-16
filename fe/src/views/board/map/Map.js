@@ -10,7 +10,6 @@ class Map extends Component {
                     width="719"
                     height="477"
                     viewBox="0 0 719 477"
-                    style={{ backgroundColor: "#88b6da" }}
                 >
                     <Continent continent="AUSTRALIA" {...this.props} />
                     <Continent continent="ASIA" {...this.props} />

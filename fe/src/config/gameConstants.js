@@ -50,6 +50,7 @@ export const COUNTRIES = {
     Western_Australia: { name: "Western Australia", value: "western_australia" },
     Western_Europe: { name: "Western Europe", value: "wstern_europe" },
     Western_United_States: { name: "Western United States", value: "western_united_states" },
+    Quebec: {name: "Quebec", value: "quebec"},
     Yakutsk: { name: "Yakutsk", value: "yakutsk" },
 };
 
