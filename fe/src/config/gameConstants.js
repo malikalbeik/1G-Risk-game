@@ -105,7 +105,51 @@ export const CARDS = [
 ]
 
 export const NEIGHBOURS = {
-    indonesia: { neighbours: ["siam", "western_australia", "new_guinea"]},
-    new_guinea: { neighbours: ["indonesia", "eastern_australia", "western_australia"]},
+    afghanistan: { countries: ["ukraine", "ural", "middle_east", "china", "india"]},
+    alaska: { countries: ["kamchatka", "alberta", "northwest_territory"]},
+    alberta: { countries: ["alaska", "western_us", "ontario", "northwest_territory"]},
+    argentina: { countries: ["brazil", "peru"]},
+    brazil: { countries: ["peru", "argentina", "north_africa", "venezuela"]},
+    ontario: { countries: ["greenland", "quebec", "alberta", "western_us", "eastern_us", "northwest_territory"]},
+    indonesia: { countries: ["siam", "western_australia", "new_guinea"]},
+    new_guinea: { countries: ["indonesia", "eastern_australia", "western_australia"]},
+    eastern_australia: { ccountries: ["western_australia", "new_guinea"]},
+    western_australia: { countries: ["eastern_australia", "new_guinea", "indonesia"]},
+    ural: { countries: ["ukraine", "siberia", "afghanistan", "china"]},
+    sibera: { countries: ["ural", "mongolia", "yakutsk", "irkutsk", "china"]},
+    
+    irkutsk: { countries: ["yakutsk", "siberia", "kamchatka", "mongolia"]},
+    yakutsk: { countries: ["irkutsk", "siberia", "kamchatka"]},
+    kamchatka: { countries: ["alaska", "yakutsk", "japan", "irkutsk", "mongolia"]},
+    middle_east: { countries: ["ukraine", "afghanistan", "india", "egypt", "east_africa", "southern_europe"]},
+    india: { countries: ["middle_east", "siam", "afghanistan", "china"]},
+    siam: { countries: ["indonesia", "india", "china"]},
+    china: { countries: ["ural", "siberia", "afghanistan", "mongolia", "siam", "india"]},
+    mongolia: { countries: ["irkutsk", "siberia", "kamchatka", "china", "japan"]},
+    japan: { countries: ["kamchatka", "mongolia"]},
+    egypt: { countries: ["middle_east", "southern_europe", "north_africa", "east_africa"]},
+    north_africa: { countries: ["egypt", "southern_europe", "western_europe", "east_africa", "congo", "brazil"]},
+    east_africa: { countries: ["middle_east", "egypt", "north_africa", "congo", "madagascar", "south_africa"]},
+    congo: { countries: ["south_africa", "north_africa", "east_africa"]},
+    south_africa: { countries: ["congo", "madagascar", "east_africa"]},
+    madagascar: { countries: ["south_africa", "east_africa"]},
+    
+    peru: { countries: ["brazil", "argentina", "venezuela"]},
+    
+    venezuela: {countries: ["brazil", "peru", "central_america"]},
+    iceland: { countries: ["greenland", "great_britain", "scandinavia"]},
+    scandinavia: { countries: ["iceland", "great_britain", "ukraine", "northern_europe"]},
+    northern_europe: { countries: ["ukraine", "great_britain", "scandinavia", "southern_europe", "western_europe"]},
+    western_europe: { countries: ["north_africa", "great_britain", "northern_europe", "southern_europe"]},
+    southern_europe: { countries: ["north_africa", "egypt", "northern_europe", "western_europe", "middle_east", "ukraine"]},
+    great_britain: { countries: ["western_europe", "iceland", "northern_europe", "scandinavia"]},
+    ukraine: { countries: ["scandinavia", "ural", "northern_europe", "southern_europe", "afghanistan", "middle_east"]},
+    greenland: { countries: ["iceland", "quebec", "ontario", "northwest_territory"]},
+    venezuela: { countries: ["venezuela", "eastern_us", "western_us"]},
+    eastern_us: { countries: ["central_america", "quebec", "ontario", "western_us"]},
+    western_us: { countries: ["eastern_us", "central_america", "ontario", "alberta"]},
+    
+    quebec: { countries: ["greenland", "eastern_us", "ontario"]},
+    northwest_territory: { countries: ["greenland", "alaska", "alberta", "ontario"]}
     
 };
