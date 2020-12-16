@@ -148,3 +148,36 @@ export const NEIGHBOURS = {
     western_united_states: { countries: ["eastern_united_states", "central_america", "ontario", "alberta"]},
     yakutsk: { countries: ["irkutsk", "siberia", "kamchatka"]}, 
 };
+
+export const PLAYERS = [
+    {
+    "name": "Napoleon",
+    "country": "France",
+    "color": "#030f63",
+    "army": 10,
+    "reserve": 10,
+    "areas": [],
+    "bonus": 2,
+    "alive": true
+    },
+    {
+    "name": "Elizabeth I",
+    "country": "England",
+    "color": "#d6040e",
+    "army": 20,
+    "reserve": 20,
+    "areas": [],
+    "bonus": 2,
+    "alive": true
+    },
+    {
+    "name": "Washington",
+    "country": "USA",
+    "color": "#d86b04",
+    "army": 20,
+    "reserve": 20,
+    "areas": [],
+    "bonus": 2,
+    "alive": true
+    },
+];
