@@ -1,20 +1,29 @@
-import React, { PureComponent } from "react";
-// import "./style.scss";
+import React, { Component } from "react";
 
-import Map from '../map/Map';
-class Board extends PureComponent {
+import Map from "./map/Map";
+class Board extends Component {
     constructor(props) {
         super(props);
 
         this.state = {};
     }
 
+    componentDidMount() {
+        document.addEventListener('click', this.getClickedMapCountry);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('click', this.getClickedMapCountry);
+    }
+
     render() {
         return (
-            <div className="boardContainer">
-                <Map />
-            </div>
+            <Map />
         );
+    }
+
+    getClickedMapCountry = e => {
+        console.log(e.target.id);
     }
 }
 
