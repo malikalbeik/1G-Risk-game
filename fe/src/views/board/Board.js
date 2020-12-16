@@ -28,25 +28,23 @@ class Board extends Component {
     return (
       <BoardContainer>
         <InnerContainer>
-        <Title>Players</Title>
+          <Title>Players</Title>
           {PLAYERS.map((player) => {
             return (
               <CardBorder>
-                  <Name>{player.name}</Name>
-                  <Reserved>
-                    Reserve: {player.reserve}
-                  </Reserved>
+                <Name>{player.name}</Name>
+                <Reserved>Reserve: {player.reserve}</Reserved>
               </CardBorder>
             );
           })}
         </InnerContainer>
         <MapContainer selectedCountryId={selectedCountryId} />
         <InnerContainer>
-            <Name>Country Selected: </Name>
-            <Name>{selectedCountryId} </Name>
-            <StyledButton> Attack </StyledButton>
-            <StyledButton> Deploy 1 Troop </StyledButton>
-            <StyledButton> Deploy All Troops </StyledButton>
+          <Name>Country Selected: </Name>
+          <Name>{selectedCountryId} </Name>
+          <StyledButton> Attack </StyledButton>
+          <StyledButton> Deploy 1 Troop </StyledButton>
+          <StyledButton> Deploy All Troops </StyledButton>
         </InnerContainer>
       </BoardContainer>
     );
@@ -87,7 +85,7 @@ const CardBorder = styled.div`
   height: 30%;
   margin-left: 2%;
   margin-right: 2%;
-  
+
   border-radius: 25px;
   background-color: white;
   justify-content: center;
@@ -110,7 +108,7 @@ const StyledButton = styled(Button)`
   color: white;
 
   :hover {
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.24)
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.24);
   }
 
   :active {
