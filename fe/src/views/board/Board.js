@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-// import "./style.scss";
+import "./style.scss";
 
 import Map from '../map/Map';
 class Board extends PureComponent {
@@ -7,6 +7,7 @@ class Board extends PureComponent {
         super(props);
 
         this.state = {};
+        document.addEventListener( "click", (e) => console.log( e.target.id));
     }
 
     render() {
