@@ -2,12 +2,9 @@ import React, { Component } from "react";
 import { PLAYERS } from "../../config/gameConstants";
 import {
     Card,
-    CardImg,
-    CardText,
     CardBody,
     CardTitle,
     CardSubtitle,
-    Button,
 } from "reactstrap";
 
 import Map from "./map/Map";
