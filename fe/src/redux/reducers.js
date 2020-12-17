@@ -27,7 +27,7 @@ function userReducers(state = {}, action) {
  * Players Reducers
  */
 function playerReducers(state = {}, action) {
-    const { player, players } = action;
+    const { player } = action;
 
     switch (action.type) {
         // load current player to store
@@ -44,7 +44,7 @@ function playerReducers(state = {}, action) {
  * Countries Reducers
  */
 function countryReducers(state = {}, action) {
-    const { country, countries } = action;
+    const { country } = action;
 
     switch (action.type) {
         // load current player to store
