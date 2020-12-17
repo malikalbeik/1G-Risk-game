@@ -151,22 +151,22 @@ const InnerContainer = styled.div`
     }
 `;
 
-const CardBorder = styled.div`
-    width: 100%;
-    height: 30%;
-    margin-left: 2%;
-    margin-right: 2%;
+// const CardBorder = styled.div`
+//     width: 100%;
+//     height: 30%;
+//     margin-left: 2%;
+//     margin-right: 2%;
 
-    border-radius: 25px;
-    background-color: white;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    @media (${BREAKPOINTS.sm}) {
-        width: 100%;
-        height: 30%;
-    }
-`;
+//     border-radius: 25px;
+//     background-color: white;
+//     justify-content: center;
+//     align-items: center;
+//     text-align: center;
+//     @media (${BREAKPOINTS.sm}) {
+//         width: 100%;
+//         height: 30%;
+//     }
+// `;
 
 const StyledButton = styled(Button)`
     width: 90%;
@@ -216,14 +216,14 @@ const Name = styled.h5`
     }
 `;
 
-const Reserved = styled.h6`
-    font-size: 100%;
-    text-align: center;
-    color: #606060;
-    @media (${BREAKPOINTS.sm}) {
-        font-size: 80%;
-        text-align: center;
-    }
-`;
+// const Reserved = styled.h6`
+//     font-size: 100%;
+//     text-align: center;
+//     color: #606060;
+//     @media (${BREAKPOINTS.sm}) {
+//         font-size: 80%;
+//         text-align: center;
+//     }
+// `;
 
 export default Board;
