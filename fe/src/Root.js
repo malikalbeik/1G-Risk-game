@@ -4,31 +4,28 @@ import styled from "styled-components";
 import NavBar from "./views/components/navBar";
 
 // Redux
-import { createStore } from 'redux'
-import { Provider } from 'react-redux'
-import rootReducer from './redux/reducers'
+import { createStore } from "redux";
+import { Provider } from "react-redux";
+import rootReducer from "./redux/reducers";
 
 // Pages
 import App from "./views/mainMenu";
 import Login from "./views/login";
 import SignUp from "./views/signup";
-import Board from "./views/board";
+import GameSetup from "./views/game-setup";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import Board from "./views/board/Board";
 
 // Redux dev tools
-const reduxDevTools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+const reduxDevTools =
+    window.__REDUX_DEVTOOLS_EXTENSION__ &&
+    window.__REDUX_DEVTOOLS_EXTENSION__();
 
 // Redux Store
-const store = createStore(rootReducer, reduxDevTools)
+const store = createStore(rootReducer, reduxDevTools);
 
 class Root extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {};
-    }
-
     render() {
         return (
             <Provider store={store}>
@@ -38,6 +35,7 @@ class Root extends Component {
                         <Route path="/" exact component={App} />
                         <Route path="/login" exact component={Login} />
                         <Route path="/signup" exact component={SignUp} />
+                        <Route path="/setup" exact component={GameSetup} />
                         <Route path="/board" exact component={Board} />
                     </StyledAppWrapper>
                 </BrowserRouter>
@@ -50,6 +48,5 @@ const StyledAppWrapper = styled.div`
     // -100 Accounting for header
     margin-top: -100px;
 `;
-
 
 export default Root;
