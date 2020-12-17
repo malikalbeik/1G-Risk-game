@@ -1,159 +1,64 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import styled from "styled-components";
 import Continent from "./Continent";
 
-class Map extends Component {
-  render() {
-    return (
-      <MapContainer>
-        <svg width="719" height="477" viewBox="0 0 719 477">
-          <Continent continent="AUSTRALIA" {...this.props} />
-          <Continent continent="ASIA" {...this.props} />
-          <Continent continent="AFRICA" {...this.props} />
-          <Continent continent="NORTH_AMERICA" {...this.props} />
-          <Continent continent="SOUTH_AMERICA" {...this.props} />
-          <Continent continent="EUROPE" {...this.props} />
-        </svg>
-      </MapContainer>
-    );
-  }
+class Map {
+    constructor() {
+        this.continents = [
+            new Continent("ASIA"),
+            new Continent("AFRICA"),
+            new Continent("AUSTRALIA"),
+            new Continent("NORTH_AMERICA"),
+            new Continent("SOUTH_AMERICA"),
+            new Continent("EUROPE")
+        ];
+        this.countries = [];
+        for (let i = 0; i < this.continents.length; i++) {
+            let tempCountries = this.continents[i].getCountries();
+            for (let j = 0; j < tempCountries.length; j++) {
+                this.countries.push(tempCountries[j]);
+            }
+        }
+    }
+
+    getAttakingAndDefendingCountry(selectedCountryId, countryToAttackId) {
+        let attackingCountry = null;
+        let defendingCountry = null;
+        for (let i = 0; i < this.countries.length; i++) {
+            if (this.countries[i].getId() === selectedCountryId) {
+                attackingCountry = this.countries[i];
+            } else if (this.countries[i].getId() === countryToAttackId) {
+                defendingCountry = this.countries[i];
+            }
+        } 
+    }
+
+    deployInitialTroop(selectedCountryId, player, numberOfTroops) {
+        for (let i = 0; i < this.continents.length; i++) {
+            if (this.continents[i].deployInitialTroopToCountry(selectedCountryId, player, numberOfTroops)) {
+                return true;
+            };
+        }
+        return false;        
+    }
+    
+    getView() {
+        const svg = React.createElement("svg",{
+                height: "477",
+                width: "719",
+                viewBox: "0 0 719 477",
+            },
+            ...this.continents.map(continent => continent.getView())
+        );
+        return React.createElement(MapContainer, {}, svg);
+    }
 }
 
-const MapContainer = styled.div`
-  text-align: center;
-
-  #eastern_australia {
-    fill: #a31aa6;
-  }
-  #western_australia {
-    fill: #a31aa6;
-  }
-  #indonesia {
-    fill: #a31aa6;
-  }
-  #new_guinea {
-    fill: #a31aa6;
-  }
-  #north_africa {
-    fill: #9c7805;
-  }
-  #south_africa {
-    fill: #9c7805;
-  }
-  #congo {
-    fill: #9c7805;
-  }
-  #north_africa {
-    fill: #9c7805;
-  }
-  #east_africa {
-    fill: #9c7805;
-  }
-  #egypt {
-    fill: #9c7805;
-  }
-  #madagascar {
-    fill: #9c7805;
-  }
-  #peru {
-    fill: #ea4224;
-  }
-  #argentina {
-    fill: #ea4224;
-  }
-  #brazil {
-    fill: #ea4224;
-  }
-  #venezuela {
-    fill: #ea4224;
-  }
-  #central_america {
-    fill: #d9dd23;
-  }
-  #eastern_united_states {
-    fill: #d9dd23;
-  }
-  #western_united_states {
-    fill: #d9dd23;
-  }
-  #northwest_territory {
-    fill: #d9dd23;
-  }
-  #ontario {
-    fill: #d9dd23;
-  }
-  #alberta {
-    fill: #d9dd23;
-  }
-  #alaska {
-    fill: #d9dd23;
-  }
-  #quebec {
-    fill: #d9dd23;
-  }
-  #greenland {
-    fill: #d9dd23;
-  }
-  #southern_europe {
-    fill: #47c1dc;
-  }
-  #western_europe {
-    fill: #47c1dc;
-  }
-  #northern_europe {
-    fill: #47c1dc;
-  }
-  #great_britain {
-    fill: #47c1dc;
-  }
-  #iceland {
-    fill: #47c1dc;
-  }
-  #scandinavia {
-    fill: #47c1dc;
-  }
-  #ukraine {
-    fill: #47c1dc;
-  }
-  #middle_east {
-    fill: #89db8c;
-  }
-  #afghanistan {
-    fill: #89db8c;
-  }
-  #india {
-    fill: #89db8c;
-  }
-  #china {
-    fill: #89db8c;
-  }
-  #siam {
-    fill: #89db8c;
-  }
-  #irkutsk {
-    fill: #89db8c;
-  }
-  #mongolia {
-    fill: #89db8c;
-  }
-  #ural {
-    fill: #89db8c;
-  }
-  #siberia {
-    fill: #89db8c;
-  }
-  #yakursk {
-    fill: #89db8c;
-  }
-  #japan {
-    fill: #89db8c;
-  }
-  #kamchatka {
-    fill: #89db8c;
-  }
-`;
-
 export default Map;
+
+const MapContainer = styled.div`
+    text-align: center;
+`;
 
 /* Paths lets add these later if we have time*/
 

@@ -1,59 +1,62 @@
-import React, { Component } from "react";
-import styled from "styled-components";
+import React from "react";
+import invert from "invert-color";
 
-class Country extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            numberOfTroops: 0,
-        };
+class Country {
+    constructor(id, d, textCoordinates, color) {
+        this.id = id;
+        this.d = d;
+        this.textCoordinates = textCoordinates;
+        this.numberOfTroops = 0;
+        this.occupyingPlayerId = "";
+        this.color = color;
     }
 
-    render() {
-        const { numberOfTroops } = this.state;
-        const Path = styled.path`
-            cursor: pointer;
+    getId() {
+        return this.id;
+    }
 
-            @keyframes switch {
-                50% {
-                    opacity: 1;
-                }
-            }
+    getNumberOfTroops() {
+        return this.numberOfTroops;
+    }
+    setNumberOfTroops(numberOfTroops) {
+        this.numberOfTroops = numberOfTroops;
+    }
 
-            @keyframes fillChange {
-                50% {
-                    fill: #fff;
-                }
-            }
-            animation: ${(props) => {
-                if (props.id === this.props.selectedCountryId) {
-                    return "fillChange 2s infinite ease both";
-                }
-            }}}
-        `;
-        const Text = styled.text`
-            pointer-events: none;
-        `;
-        return (
-            <g>
-                <Path
-                    id={this.props.id}
-                    d={this.props.d}
-                    stroke="black"
-                    strokeMiterlimit="4.32165"
-                />
-                <Text
-                    x={this.props.textCoordinates[0]}
-                    y={this.props.textCoordinates[1]}
-                    fontFamily="Verdana"
-                    fontSize="15"
-                    fill="white"
-                >
-                    {numberOfTroops}
-                </Text>
-            </g>
-        );
+    getOccupyingPlayerId() {
+        return this.occupyingPlayerId;
+    }
+    setOccupyingPlayer(player) {
+        this.occupyingPlayerId = player.id;
+        this.setColor(player.color);
+    }
+
+    getColor() {
+        return this.color;
+    }
+    setColor(color) {
+        this.color = color;
+    }
+
+    getView() {
+        const text = React.createElement("text", {
+            x: this.textCoordinates[0],
+            y: this.textCoordinates[1],
+            fontFamily: "Verdana",
+            fontSize: "15",
+            fill: "white",
+            style: { pointerEvents: "none", fill: invert(this.color, true) },
+            children: this.numberOfTroops,
+        });
+        const path = React.createElement("path", {
+            id: this.id,
+            d: this.d,
+            stroke: invert(this.color, true),
+            strokeMiterlimit: "4.32165",
+            style: { cursor: "pointer", fill: this.color },
+        });
+        const g = React.createElement("g", null, path, text);
+
+        return g;
     }
 }
 
