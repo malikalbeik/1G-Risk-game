@@ -16,8 +16,10 @@ class CardDeck{
         }
     }
 
-    getCards(){
-        return this.cards;
+    getCard(){
+        var card = this.cards.shift();
+        this.noOfCards--;
+        return card;
     }
 
     shuffleCards(){
