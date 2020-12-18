@@ -197,8 +197,9 @@ class Board extends Component {
       this.forceUpdate();
 
       this.setState(
-        { currentPlayerTurn: (currentPlayerTurn + 1) % this.allPlayers.length },
-        () => {}
+        { currentPlayerTurn: (currentPlayerTurn + 1) % this.allPlayers.length }, () => {
+
+        }
       );
 
       if (this.allPlayers[this.state.currentPlayerTurn].getNoOfCards() > 0) {
