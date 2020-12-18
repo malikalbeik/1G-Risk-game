@@ -33,7 +33,7 @@ class CardDeck {
       console.log("Card received no: " + this.noOfCards + "\n");
       return card;
     } else {
-        console.log("No Cards left");
+      console.log("No Cards left");
     }
   }
 
