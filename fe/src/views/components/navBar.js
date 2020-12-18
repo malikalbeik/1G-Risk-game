@@ -14,11 +14,17 @@ import {
   NavLink,
 } from "reactstrap";
 
+import fire from "../../firebase";
+
 import { BREAKPOINTS } from "../../config/gameConstants"
 
 
 class NavBar extends PureComponent {
   state = { isOpen: false };
+
+  logout() {
+    fire.auth().signOut();
+  }
 
   open = () => {
     this.setState({
@@ -59,6 +65,9 @@ class NavBar extends PureComponent {
             <Nav className="ml-auto" navbar>
               <NavItem>
                 <StyledNavLink href="/login" onClick={() => { this.close(); }}>LogIn</StyledNavLink>
+              </NavItem>
+              <NavItem>
+                <StyledNavLink href="/" onClick={() => { this.logout(); }}>Log out</StyledNavLink>
               </NavItem>
             </Nav>
           </Collapse>
