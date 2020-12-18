@@ -119,16 +119,18 @@ class Board extends Component {
           )}
           {this.state.hasCards ? (
             <StyledButton
-              onClick={() => {this.allPlayers[this.state.currentPlayerTurn].tradeCards();
+              onClick={() => {
+                this.allPlayers[this.state.currentPlayerTurn].tradeCards();
                 if (
-                    this.allPlayers[this.state.currentPlayerTurn].getNoOfCards() > 0
-                  ) {
-                    this.setState({ hasCards: true });
-                  } else {
-                    this.setState({ hasCards: false });
-                    this.setState({playerCards: ""});
-                  }
-                }}
+                  this.allPlayers[this.state.currentPlayerTurn].getNoOfCards() >
+                  0
+                ) {
+                  this.setState({ hasCards: true });
+                } else {
+                  this.setState({ hasCards: false });
+                  this.setState({ playerCards: "" });
+                }
+              }}
             >
               Trade Cards
             </StyledButton>
@@ -173,6 +175,50 @@ class Board extends Component {
             Deploy
           </StyledButton>
         </InnerContainer>
+        <Table>
+          <thead>
+          <tr>
+            <th>Continent</th>
+            <th> +Troops</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>Africa</td>
+            <td>5</td>
+          </tr>
+          </tbody>
+          <tbody>
+          <tr>
+            <td>Asia</td>
+            <td>7</td>
+          </tr>
+          </tbody>
+          <tbody>
+          <tr>
+            <td>Australia</td>
+            <td>2</td>
+          </tr>
+          </tbody>
+          <tbody>
+          <tr>
+            <td>Europe</td>
+            <td>5</td>
+          </tr>
+          </tbody>
+          <tbody>
+          <tr>
+            <td>North America</td>
+            <td>5</td>
+          </tr>
+          </tbody>
+          <tbody>
+          <tr>
+            <td>South America</td>
+            <td>2</td>
+          </tr>
+          </tbody>
+        </Table>
       </BoardContainer>
     );
   }
@@ -197,9 +243,8 @@ class Board extends Component {
       this.forceUpdate();
 
       this.setState(
-        { currentPlayerTurn: (currentPlayerTurn + 1) % this.allPlayers.length }, () => {
-
-        }
+        { currentPlayerTurn: (currentPlayerTurn + 1) % this.allPlayers.length },
+        () => {}
       );
 
       if (this.allPlayers[this.state.currentPlayerTurn].getNoOfCards() > 0) {
@@ -229,7 +274,7 @@ const BoardContainer = styled.div`
 `;
 
 const InnerContainer = styled.div`
-  width: 20%;
+  width: 80%;
   height: 100%;
   margin-left: 2%;
   margin-right: 2%;
@@ -265,7 +310,7 @@ const InnerContainer = styled.div`
 const StyledButton = styled(Button)`
   width: 90%;
   margin: 10% 0 0 0;
-  font-size: large;
+  font-size: 90%;
   font-weight: bold;
   background-color: #1d65a8;
   color: white;
@@ -318,6 +363,35 @@ const Reserved = styled.h6`
     font-size: 80%;
     margin: 10px 0 0 0;
     text-align: center;
+  }
+`;
+
+const Table = styled.table`
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 80%;
+  margin-right: 8px;
+  font-size: 90%;
+  td,
+  th {
+    border: 1px solid #ddd;
+    padding:  4px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: #8964fe;
+    color: white;
+  }
+
+  tr {
+    background-color: #efefef;
+    :hover {
+      background-color: lightpink;
+    }
   }
 `;
 
