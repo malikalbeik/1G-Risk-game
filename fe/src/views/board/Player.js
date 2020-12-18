@@ -1,95 +1,161 @@
 import React from "react";
 import styled from "styled-components";
-import { BREAKPOINTS } from "../../config/gameConstants";
+import {
+  BREAKPOINTS,
+  CARD_TYPES,
+  NUMBER_OF_CARDS_FOR_TRADE,
+} from "../../config/gameConstants";
 
 class Player {
-    constructor(name, id, remainingTroops, color, isPlayerTurn, turnNumber) {
-        this.name = name;
-        this.id = id;
-        this.remainingTroops = remainingTroops;
-        this.color = color;
-        this.isPlayerTurn = isPlayerTurn;
-        this.turnNumber = turnNumber;
-    }
+  collecetedCards = [];
 
-    getId() {
-        return this.id;
-    }
+  constructor(
+    name,
+    id,
+    remainingTroops,
+    color,
+    isPlayerTurn,
+    turnNumber,
+    noOfCards,
+    cardTrader
+  ) {
+    this.name = name;
+    this.id = id;
+    this.remainingTroops = remainingTroops;
+    this.color = color;
+    this.isPlayerTurn = isPlayerTurn;
+    this.turnNumber = turnNumber;
+    this.noOfCards = noOfCards;
+    this.cardTrader = cardTrader;
+  }
 
-    getTurnNumber() {
-        return this.turnNumber;
-    }
+  getId() {
+    return this.id;
+  }
 
-    getRemainingTroops() {
-        return this.remainingTroops;
+  getTurnNumber() {
+    return this.turnNumber;
+  }
+
+  getRemainingTroops() {
+    return this.remainingTroops;
+  }
+
+  setRemainingTroops(remainingTroops) {
+    if (remainingTroops >= 0) {
+      this.remainingTroops = remainingTroops;
+      return true;
     }
-    setRemainingTroops(remainingTroops) {
-        if (remainingTroops >= 0) {
-            this.remainingTroops = remainingTroops;
-            return true;
+    return false;
+  }
+
+  getIsPlayerTurn() {
+    return this.isPlayerTurn;
+  }
+
+  setIsPlayerTurn(playerTurn) {
+    this.isPlayerTurn = playerTurn;
+  }
+
+  getColor() {
+    return this.color;
+  }
+
+  getNoOfCards() {
+    return this.noOfCards;
+  }
+
+  recieveCard(newCard) {
+    this.collecetedCards.push(newCard);
+    this.noOfCards++;
+    console.log(this.noOfCards);
+  }
+
+  displayCards() {
+    var cardsName = "";
+    for (let i = 0; i < this.noOfCards; i++) {
+      if (
+        this.collecetedCards[i].getCardType() === CARD_TYPES.TerritoryType.type
+      ) {
+        if (i === this.noOfCards - 1) {
+          cardsName += this.collecetedCards[i].getTerritoryName() + " ";
+        } else {
+          cardsName += this.collecetedCards[i].getTerritoryName() + ", ";
         }
-        return false;
+      } else {
+        if (i === this.noOfCards - 1) {
+          cardsName += this.collecetedCards[i].getCardType() + " ";
+        } else {
+          cardsName += this.collecetedCards[i].getCardType() + ", ";
+        }
+      }
     }
+    console.log(cardsName);
+    return cardsName;
+  }
 
-    getIsPlayerTurn() {
-        return this.isPlayerTurn;
+  tradeCards() {
+    this.remainingTroops += this.cardTrader.tradeCards(this.noOfCards);
+    if (this.noOfCards >= NUMBER_OF_CARDS_FOR_TRADE) {
+      for (let i = 0; i < NUMBER_OF_CARDS_FOR_TRADE; i++) {
+        this.collecetedCards.shift();
+        this.noOfCards--;
+      }
     }
+  }
 
-    setIsPlayerTurn(playerTurn) {
-        this.isPlayerTurn = playerTurn;
-    }
-
-    getColor() {
-        return this.color;
-    }
-
-    getView() {
-        const PlayerName = React.createElement(Name, {
-            children: this.name,
-        });
-        const PlayerTroops = React.createElement(Reserved, {
-            children: `Troops: ${this.remainingTroops}`,
-        });
-        return React.createElement(CardBorder, {
-            style: { border: `${this.isPlayerTurn ? "1px solid black" : ""}` },
-            key: this.id,
-        }, PlayerName, PlayerTroops);
-    }
+  getView() {
+    const PlayerName = React.createElement(Name, {
+      children: this.name,
+    });
+    const PlayerTroops = React.createElement(Reserved, {
+      children: `Troops: ${this.remainingTroops}`,
+    });
+    return React.createElement(
+      CardBorder,
+      {
+        style: { border: `${this.isPlayerTurn ? "1px solid black" : ""}` },
+        key: this.id,
+      },
+      PlayerName,
+      PlayerTroops
+    );
+  }
 }
 
 const CardBorder = styled.div`
-    width: 100%;
-    height: 12%;
-    margin-left: 2%;
-    margin-right: 2%;
+  width: 100%;
+  height: 12%;
+  margin-left: 2%;
+  margin-right: 2%;
 
-    border-radius: 25px;
-    background-color: white;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    @media (${BREAKPOINTS.sm}) {
-        width: 100%;
-        height: 30%;
-    }
+  border-radius: 25px;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  @media (${BREAKPOINTS.sm}) {
+    width: 100%;
+    height: 30%;
+  }
 `;
 const Name = styled.h5`
-    font-size: 140%;
+  font-size: 140%;
+  text-align: center;
+  margin: 0 0 10% 0;
+  @media (${BREAKPOINTS.sm}) {
+    font-size: 100%;
+    margin: 0 0 2px 0;
     text-align: center;
-    margin: 0 0 10% 0;
-    @media (${BREAKPOINTS.sm}) {
-        font-size: 100%;
-        margin: 0 0 2px 0;
-        text-align: center;
-    }
+  }
 `;
 const Reserved = styled.h6`
-    font-size: 100%;
+  font-size: 100%;
+  text-align: center;
+  color: #606060;
+  @media (${BREAKPOINTS.sm}) {
+    font-size: 80%;
     text-align: center;
-    color: #606060;
-    @media (${BREAKPOINTS.sm}) {
-        font-size: 80%;
-        text-align: center;
-    }
+  }
 `;
 export default Player;
