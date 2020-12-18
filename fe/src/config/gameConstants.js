@@ -2,7 +2,7 @@ export const NUMBER_OF_CARDS_IN_DECK = 44;
 
 export const NUMBER_OF_TRADES_SET = 7;
 
-export const NUMBER_OF_CARDS_FOR_TRADE = 5;
+export const NUMBER_OF_CARDS_FOR_TRADE = 3;
 
 export const BREAKPOINTS = {
     xs: "max-width: 575.98px",
