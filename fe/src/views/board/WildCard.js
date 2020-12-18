@@ -1,13 +1,13 @@
-import { TROOP_TYPES } from "../../config/gameConstants";
+import { CARD_TYPES } from "../../config/gameConstants";
 
 class WildCard extends Card {
 
-    constructor(){
+    constructor(troop1, troop2, troop3){
         super();
-        this.troop1 = TROOP_TYPES.Cavalry.name;
-        this.troop2 = TROOP_TYPES.Artillery.name;
-        this.troop3 = TROOP_TYPES.Infantry.name;
-        this.cardType = "WildCard";
+        this.troop1 = troop1;
+        this.troop2 = troop2;
+        this.troop3 = troop3;
+        this.cardType = CARD_TYPES.WildType.type;
     }
 
     getCardType(){
@@ -22,3 +22,5 @@ class WildCard extends Card {
         return React.createElement(CardBorder,{children: Troop1, Troop2, Troop3});
     }
 }
+
+export default WildCard;

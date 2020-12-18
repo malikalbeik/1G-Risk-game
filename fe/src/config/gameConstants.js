@@ -1,4 +1,4 @@
-export const NUMBER_OF_CARDS_IN_DECK = 42;
+export const NUMBER_OF_CARDS_IN_DECK = 44;
 
 export const BREAKPOINTS = {
     xs: "max-width: 575.98px",
@@ -74,6 +74,16 @@ export const TROOP_TYPES = {
     Cavalry: { name: "CAVALRY", troopSize: 5 },
     Artillery: { name: "ARTILLERY", troopSize: 10 },
 };
+
+export const CARD_TYPES = {
+    TerritoryType: {type: "Territory Card"},
+    WildType: {type: "Wild Card"}
+};
+
+export const WILDCARDS = [
+    {troop1: TROOP_TYPES.Infantry.name, troop2: TROOP_TYPES.Artillery.name, troop3: TROOP_TYPES.Cavalry.name},
+    {troop1: TROOP_TYPES.Infantry.name, troop2: TROOP_TYPES.Artillery.name, troop3: TROOP_TYPES.Cavalry.name}
+]
 
 export const CARDS = [
     { country: COUNTRIES.Afghanistan.name, troop: TROOP_TYPES.Cavalry.name },

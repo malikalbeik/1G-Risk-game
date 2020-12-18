@@ -1,8 +1,10 @@
+import { CARD_TYPES } from "../../config/gameConstants";
+
 class TerritoryCard extends Card {
     
     constructor(territoryName, infantaryName){
         super(territoryName, infantaryName);
-        this.cardType = "territory";
+        this.cardType = CARD_TYPES.TerritoryType.type;
     }
 
     getCardType(){
@@ -16,3 +18,5 @@ class TerritoryCard extends Card {
         return React.createElement(CardBorder,{children: Country, Troop});
     }
 }
+
+export default TerritoryCard;
