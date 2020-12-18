@@ -3,13 +3,17 @@ import styled from "styled-components";
 import { BREAKPOINTS } from "../../config/gameConstants";
 
 class Player {
-    constructor(name, id, remainingTroops, color, isPlayerTurn, turnNumber) {
+    collecetedCards = [];
+
+    constructor(name, id, remainingTroops, color, isPlayerTurn, turnNumber, noOfCards, cardTrader) {
         this.name = name;
         this.id = id;
         this.remainingTroops = remainingTroops;
         this.color = color;
         this.isPlayerTurn = isPlayerTurn;
         this.turnNumber = turnNumber;
+        this.noOfCards = noOfCards;
+        this.cardTrader = cardTrader;
     }
 
     getId() {
@@ -23,6 +27,7 @@ class Player {
     getRemainingTroops() {
         return this.remainingTroops;
     }
+
     setRemainingTroops(remainingTroops) {
         if (remainingTroops >= 0) {
             this.remainingTroops = remainingTroops;
@@ -41,6 +46,19 @@ class Player {
 
     getColor() {
         return this.color;
+    }
+
+    getNoOfCards(){
+        return this.noOfCards;
+    }
+
+    recieveCard(newCard){
+        this.collecetedCards.push(newCard);
+        this.noOfCards++;
+    }
+
+    tradeCards(){
+        this.remainingTroops +=  this.cardTrader.tradeCards(this.noOfCards);
     }
 
     getView() {
