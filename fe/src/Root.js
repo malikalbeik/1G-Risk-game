@@ -14,6 +14,7 @@ import Login from "./views/login";
 import SignUp from "./views/signup";
 import GameSetup from "./views/game-setup";
 
+import fire from "./firebase";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Board from "./views/board/Board";
 
@@ -26,6 +27,31 @@ const reduxDevTools =
 const store = createStore(rootReducer, reduxDevTools);
 
 class Root extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            user: null,
+        }
+
+        this.authListener = this.authListener.bind(this);
+    }
+
+    componentDidMount() {
+        this.authListener();
+    }
+
+    authListener() {
+        fire.auth().onAuthStateChanged(user => {
+            if (user) {
+                this.setState({ user });
+                console.log("User has loged in and it is: " + user)
+            } else {
+                this.setState({ user: null });
+            }
+        })
+    }
+
     render() {
         return (
             <Provider store={store}>

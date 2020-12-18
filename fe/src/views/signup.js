@@ -1,13 +1,36 @@
 import React, { PureComponent } from "react";
 import styled from "styled-components";
 import backgroundImage from "../assets/background.jpg"
+import fire from "../firebase";
 import { Button, Container, Col, Row, Form, FormGroup, Input } from 'reactstrap';
 
 class SignUp extends PureComponent {
     constructor(props) {
         super(props);
+        this.signUp = this.signUp.bind(this);
+    }
 
-        this.state = {};
+    signUp(e) {
+        e.preventDefault();
+        const firstName = e.target[0].value;
+        const lastName = e.target[1].value;
+        const email = e.target[2].value;
+        const password = e.target[3].value;
+        const confirmedPassword = e.target[4].value;
+
+        if (password.localeCompare(confirmedPassword) !== 0) {
+            alert("passwords should match");
+            return;
+        }
+
+        fire.auth().createUserWithEmailAndPassword(email, password)
+            .then((u) => {
+                console.log('Successfully Signed Up');
+                this.props.history.push('/')
+            })
+            .catch((err) => {
+                console.log('Error: ' + err.toString());
+            })
     }
 
     render() {
@@ -16,7 +39,7 @@ class SignUp extends PureComponent {
                 <CenteredContainer>
                     <InnerContainer>
                         <h2>Sign Up</h2>
-                        <Form>
+                        <Form onSubmit={this.signUp}>
                             <Row form>
                                 <Col md={6}>
                                     <FormGroup>

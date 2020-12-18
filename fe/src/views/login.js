@@ -1,4 +1,7 @@
 import React, { PureComponent } from "react";
+
+import fire from "../firebase";
+
 import styled from "styled-components";
 import backgroundImage from "../assets/background.jpg"
 import { Button, Container, Col, Row, Form, FormGroup, Input } from 'reactstrap';
@@ -6,17 +9,32 @@ import { Button, Container, Col, Row, Form, FormGroup, Input } from 'reactstrap'
 class Login extends PureComponent {
   constructor(props) {
     super(props);
+    this.verifyUser = this.verifyUser.bind(this);
+  }
 
-    this.state = {};
+  verifyUser(e) {
+    e.preventDefault();
+    const email = e.target[0].value;
+    const password = e.target[1].value;
+
+    fire.auth().signInWithEmailAndPassword(email, password)
+      .then((u) => {
+        console.log("you are successfully loged in")
+        this.props.history.push('/')
+      })
+      .catch(err => {
+        console.log("Error: " + err.toString());
+      })
   }
 
   render() {
+
     return (
       <BackgroundContainer>
         <CenteredContainer>
           <InnerContainer>
             <h2>Sign In</h2>
-            <Form>
+            <Form onSubmit={this.verifyUser}>
               <Row form>
                 <Col md={12}>
                   <FormGroup>
@@ -33,7 +51,7 @@ class Login extends PureComponent {
             </Form>
           </InnerContainer>
         </CenteredContainer>
-      </BackgroundContainer>
+      </BackgroundContainer >
     );
   }
 }

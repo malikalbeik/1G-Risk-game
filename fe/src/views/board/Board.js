@@ -110,7 +110,7 @@ class Board extends Component {
             this.forceUpdate();
 
             this.setState({ currentPlayerTurn: (currentPlayerTurn + 1) % this.allPlayers.length }, () => {
-                
+
             })
             this.forceUpdate();
 
