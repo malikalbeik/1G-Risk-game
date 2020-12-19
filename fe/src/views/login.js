@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 
 import fire from "../firebase";
 
+import { connect } from 'react-redux'
 import styled from "styled-components";
 import backgroundImage from "../assets/background.jpg"
 import { Button, Container, Col, Row, Form, FormGroup, Input } from 'reactstrap';
@@ -19,40 +20,46 @@ class Login extends PureComponent {
 
     fire.auth().signInWithEmailAndPassword(email, password)
       .then((u) => {
-        console.log("you are successfully loged in")
         this.props.history.push('/')
       })
       .catch(err => {
-        console.log("Error: " + err.toString());
+        alert("Error loging in: " + err.toString());
       })
   }
 
   render() {
+    const { currentUser } = this.props;
+    const isSignedIn = !(Object.keys(currentUser).length === 0 && currentUser.constructor === Object);
 
-    return (
-      <BackgroundContainer>
-        <CenteredContainer>
-          <InnerContainer>
-            <h2>Sign In</h2>
-            <Form onSubmit={this.verifyUser}>
-              <Row form>
-                <Col md={12}>
-                  <FormGroup>
-                    <Input type="email" name="email" placeholder="Email" />
-                  </FormGroup>
-                </Col>
-                <Col md={12}>
-                  <FormGroup>
-                    <Input type="password" name="password" placeholder="password" />
-                  </FormGroup>
-                </Col>
-              </Row>
-              <StyledButton>Sign in</StyledButton>
-            </Form>
-          </InnerContainer>
-        </CenteredContainer>
-      </BackgroundContainer >
-    );
+    if (isSignedIn) {
+      this.props.history.push('/')
+      return null;
+    } else {
+      return (
+        <BackgroundContainer>
+          <CenteredContainer>
+            <InnerContainer>
+              <h2>Sign In</h2>
+              <Form onSubmit={this.verifyUser}>
+                <Row form>
+                  <Col md={12}>
+                    <FormGroup>
+                      <Input type="email" name="email" placeholder="Email" />
+                    </FormGroup>
+                  </Col>
+                  <Col md={12}>
+                    <FormGroup>
+                      <Input type="password" name="password" placeholder="password" />
+                    </FormGroup>
+                  </Col>
+                </Row>
+                <StyledButton>Sign in</StyledButton>
+              </Form>
+            </InnerContainer>
+          </CenteredContainer>
+        </BackgroundContainer >
+      );
+    }
   }
 }
 
@@ -98,4 +105,8 @@ const StyledButton = styled(Button)`
   }
 `;
 
-export default Login;
+const mapStateToProps = state => ({
+  currentUser: state.currentUser || {}
+});
+
+export default connect(mapStateToProps)(Login);

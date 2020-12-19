@@ -82,8 +82,8 @@ const StyledButton = styled(Button)`
 `;
 
 const InnerContainer = styled(Container)`
-  width: 40%;
-  padding: 10%;
+  width: 60%;
+  padding: 50px;
   margin: 10% 0 0 0;
   border-radius: 25px;
   background-color: white;

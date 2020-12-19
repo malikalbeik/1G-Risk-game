@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React from "react";
 import styled from "styled-components";
 import Continent from "./Continent";
 import { NEIGHBOURS } from '../../../config/gameConstants';
@@ -24,7 +24,7 @@ class Map {
         }
     }
 
-    setSelectedCountry(selectedCountry) { 
+    setSelectedCountry(selectedCountry) {
         for (let i = 0; i < this.countries.length; i++) {
             if (selectedCountry === this.countries[i].getId()) {
                 this.selectedCountry = selectedCountry;
@@ -41,14 +41,14 @@ class Map {
         for (let i = 0; i < this.countries.length; i++) {
             if (this.countries[i].getId() === selectedCountryId) {
                 attackingCountry = this.countries[i];
-            } 
+            }
             if (this.countries[i].getId() === countryToAttackId) {
                 defendingCountry = this.countries[i];
             }
-        } 
+        }
         return [attackingCountry, defendingCountry];
     }
-    
+
     deployTroop(selectedCountryId, player, numberOfTroops) {
         let troopDeployed = false;
         for (let i = 0; i < this.continents.length; i++) {
@@ -57,7 +57,7 @@ class Map {
                 break;
             };
         }
-        return troopDeployed;        
+        return troopDeployed;
     }
 
     doPlayersHaveTroops() {
@@ -81,7 +81,7 @@ class Map {
         } else {
             return "";
         }
-        
+
         // Check if player has no reserve 
         for (let i = 0; i < this.players.length; i++) {
             if (this.players[i].getRemainingTroops() !== 0) {
@@ -109,7 +109,7 @@ class Map {
         return "ATTACK";
     }
 
-    isAttackStateValid(attackingCountry, defendingCountry, numOfTroopsToAttackWith, numOfTroopsToDefendWith) {        
+    isAttackStateValid(attackingCountry, defendingCountry, numOfTroopsToAttackWith, numOfTroopsToDefendWith) {
         // Upto 3 troops can be used for attack
         if (numOfTroopsToAttackWith > 3) {
             console.log("Cannot attacking with more than 3 troops");
@@ -119,7 +119,7 @@ class Map {
         // Country with less than 2 troops cannot attack.
         if (attackingCountry.getNumberOfTroops() < 2) {
             console.log("Country has less than 2 troops");
-            return false; 
+            return false;
         }
 
         // Less troops in country than to attack with
@@ -161,7 +161,7 @@ class Map {
         if (!attackingCountryId) {
             console.log("Attacking country id is null");
             return false;
-        } 
+        }
         if (!defendingCountryId) {
             console.log("Defending country id is null");
             return false;
@@ -171,10 +171,10 @@ class Map {
             return false;
         }
         return this.getAttakingAndDefendingCountry(attackingCountryId, defendingCountryId);
-    } 
+    }
 
     attackTerritory(attackingCountryId, defendingCountryId, numOfTroopsToAttackWith, numOfTroopsToDefendWith) {
-    
+
         const result = this.countryIdsToNames(attackingCountryId, defendingCountryId);
         let [attackingCountry, defendingCountry] = null;
         if (result) {
@@ -192,11 +192,11 @@ class Map {
         }
 
         const [attackingPlayer, defendingPlayer] = this.getAttackingAndDefendingPlayer(attackingCountry, defendingCountry);
-        
+
         // Roll dice for attacker and defender. These will be sorted from highest to lowest.
         let attackerDiceRolls = attackingPlayer.rollDiceBasedOnTroops(numOfTroopsToAttackWith);
         let defenderDiceRolls = defendingPlayer.rollDiceBasedOnTroops(numOfTroopsToDefendWith);
-        
+
         // Compare dice rolls
         let attackerToopsAfterComparison = new Array(numOfTroopsToAttackWith);
         let defenderTroopsAfterComparison = new Array(numOfTroopsToDefendWith);
@@ -210,7 +210,7 @@ class Map {
             }
         }
 
-        let numOfBattlesAttackerLost = 0; 
+        let numOfBattlesAttackerLost = 0;
         let numOfBattlesDefenderLost = 0;
 
         for (let i = 0; i < numOfTroopsToDefendWith; i++) {
@@ -220,7 +220,7 @@ class Map {
             if (defenderTroopsAfterComparison[i] < 0) {
                 numOfBattlesDefenderLost++;
             }
-        } 
+        }
         attackingCountry.setNumberOfTroops(attackingCountry.getNumberOfTroops() - numOfBattlesAttackerLost);
         defendingCountry.setNumberOfTroops(defendingCountry.getNumberOfTroops() - numOfBattlesDefenderLost);
 
@@ -295,11 +295,11 @@ class Map {
     }
 
     getView() {
-        const svg = React.createElement("svg",{
-                height: "477",
-                width: "719",
-                viewBox: "0 0 719 477",
-            },
+        const svg = React.createElement("svg", {
+            height: "477",
+            width: "719",
+            viewBox: "0 0 719 477",
+        },
             ...this.continents.map(continent => continent.getView())
         );
         return React.createElement(MapContainer, {}, svg);
@@ -324,7 +324,7 @@ const MapContainer = styled.div`
     className="connection_arrows"
 >
     <g>
-        
+
     </g>
     <g>
         <path

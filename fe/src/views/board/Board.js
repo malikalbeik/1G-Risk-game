@@ -31,7 +31,7 @@ class Board extends Component {
             maneuverState: false,
             validity: false,
             // countryToAttackOrManeuverTo: ''
-            
+
         };
         this.allPlayers = [];
         this.initializePlayers();
@@ -77,7 +77,7 @@ class Board extends Component {
             validity,
             selectedCountryId,
         } = this.state;
-    
+
         return (
             <BoardContainer>
                 <InnerContainer>
@@ -86,26 +86,26 @@ class Board extends Component {
                 <MapContainer>
                     {this.map.getView()}
                     {selectedCountryId ? <span>{COUNTRIES[selectedCountryId].name} </span> : null}
-                    {attackState? 
+                    {attackState ?
                         <>
-                            <input 
-                                value={this.state.numOfAttackerTroops} 
+                            <input
+                                value={this.state.numOfAttackerTroops}
                                 onChange={e => this.setState({ numOfAttackerTroops: e.target.value })}
                             />
-                            <input 
-                                value={this.state.numOfDefenderTroops} 
+                            <input
+                                value={this.state.numOfDefenderTroops}
                                 onChange={e => this.setState({ numOfDefenderTroops: e.target.value })}
                             />
                         </>
                         : null}
-                    {maneuverState? <input 
-                        value={this.state.numOfAttackerTroops} 
-                        onChange={e => this.setState({ numOfAttackerTroops: e.target.value })}/> : null}
+                    {maneuverState ? <input
+                        value={this.state.numOfAttackerTroops}
+                        onChange={e => this.setState({ numOfAttackerTroops: e.target.value })} /> : null}
                 </MapContainer>
             </BoardContainer>
         );
     }
-    
+
     deployTurnTroops = () => {
         const { selectedCountryId, playerWantsToAttack } = this.state;
         if (this.map.deployTroop(selectedCountryId, this.playerTurnDecider.getPlayerWithTurn(), 1)) {
@@ -114,7 +114,7 @@ class Board extends Component {
         if (this.playerTurnDecider.getCurrentPlayerInfo().getRemainingTroops() === 0) {
             // this.map.resetCountryState();
             this.forceUpdate();
-            this.setState({ turnsPhase: false, attackOrSkipTurnPhase: true,  countryToAttackOrManeuverTo: '' });
+            this.setState({ turnsPhase: false, attackOrSkipTurnPhase: true, countryToAttackOrManeuverTo: '' });
         }
     };
 
@@ -126,7 +126,7 @@ class Board extends Component {
                 const currentPlayer = this.playerTurnDecider.getPlayerWithTurn();
                 this.troopsGiver.giveTroopsToPlayer(currentPlayer);
                 this.setState({ initialSetupPhase: false, turnsPhase: true });
-            }   
+            }
             this.forceUpdate();
         }
     };
@@ -156,13 +156,13 @@ class Board extends Component {
                 this.doClickAction(e);
             }
             this.prevent = false;
-          }, this.delay);
+        }, this.delay);
     };
 
     onDoubleClickListener = (e) => {
         clearTimeout(this.timer);
         this.prevent = true;
-        this.doDoubleClickAction(e);  
+        this.doDoubleClickAction(e);
     };
 
     doClickAction = (e) => {
@@ -183,7 +183,7 @@ class Board extends Component {
         const { selectedCountryId, initialSetupPhase, turnsPhase, attackOrSkipTurnPhase } = this.state;
         const id = e.target.id;
         const isCountryValid = this.countryIds.includes(id);
-        
+
         // Allow initial deployment with double click
         if (initialSetupPhase && isCountryValid) {
             this.setState({ selectedCountryId: id });
@@ -219,9 +219,9 @@ class Board extends Component {
 
     validateInput = (e, inputType) => {
         if (e.t)
-        this.setState({ 
-            [inputType]: e.target.value 
-        })
+            this.setState({
+                [inputType]: e.target.value
+            })
     }
 }
 
