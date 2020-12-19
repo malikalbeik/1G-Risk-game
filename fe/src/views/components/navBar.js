@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
 import styled from "styled-components";
 import logoImage from "../../assets/risk-logo.jpeg"
+import { connect } from 'react-redux'
 
 // Bootstrap
 import {
@@ -52,7 +53,8 @@ class NavBar extends PureComponent {
 
   render() {
     const { isOpen } = this.state;
-    const { toggle } = this;
+    const { currentUser } = this.props;
+    const isSignedIn = !(Object.keys(currentUser).length === 0 && currentUser.constructor === Object);
 
     return (
       <StyledNavbar expand="md" sticky="top" light >
@@ -60,19 +62,34 @@ class NavBar extends PureComponent {
           <StyledNavbarBrand href="/">
             <StyledLogo src={logoImage} />
           </StyledNavbarBrand>
-          <NavbarToggler className="menu" onClick={toggle} />
+          <NavbarToggler className="menu" onClick={this.toggle} />
           <Collapse isOpen={isOpen} navbar>
-            <Nav className="ml-auto" navbar>
-              <NavItem>
-                <StyledNavLink href="/login" onClick={() => { this.close(); }}>LogIn</StyledNavLink>
-              </NavItem>
-              <NavItem>
-                <StyledNavLink href="/" onClick={() => { this.logout(); }}>Log out</StyledNavLink>
-              </NavItem>
-            </Nav>
+            {isSignedIn
+              ?
+              < Nav className="ml-auto" navbar>
+                <NavItem>
+                  <StyledNavLink href="/" onClick={() => { this.close(); }}>Home</StyledNavLink>
+                </NavItem>
+                <NavItem>
+                  <StyledNavLink href="/about" onClick={() => { this.close(); }}>About Us</StyledNavLink>
+                </NavItem>
+                <NavItem>
+                  <StyledNavLink href="/" onClick={() => { this.logout(); }}>Log out</StyledNavLink>
+                </NavItem>
+              </Nav>
+              :
+              < Nav className="ml-auto" navbar>
+                <NavItem>
+                  <StyledNavLink href="/login" onClick={() => { this.close(); }}>LogIn</StyledNavLink>
+                </NavItem>
+                <NavItem>
+                  <StyledNavLink href="/signup" onClick={() => { this.close(); }}>SignUp</StyledNavLink>
+                </NavItem>
+              </Nav>
+            }
           </Collapse>
         </Container>
-      </StyledNavbar>
+      </StyledNavbar >
     );
   }
 }
@@ -134,4 +151,8 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
-export default NavBar;
+const mapStateToProps = state => ({
+  currentUser: state.currentUser || {}
+});
+
+export default connect(mapStateToProps)(NavBar);
