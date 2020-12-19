@@ -71,7 +71,7 @@ class GameSetup extends Component {
         } else {
             let players = [];
             for (let i = 0; i < val; i++) {
-                players.push({ id: uuidv4(), playerTurnNumber: i, reservePersonel: 3 // 50 - (5 * val) 
+                players.push({ id: uuidv4(), playerTurnNumber: i, reservePersonel: 23 // 50 - (5 * val) 
                 });
             }
             this.setState({ numOfPlayersRecorded: true, players});

@@ -17,6 +17,10 @@ class Player {
         this.diceRoll = null;
     }
 
+
+    getId() {
+        return this.id;
+    }
     getName() {
         return this.name;
     }
@@ -64,13 +68,6 @@ class Player {
     }
 
     rollDiceBasedOnTroops(numOfTroops) {
-        // try {
-        //     troopCount = parseInt(numOfTroops);
-        // } catch (e) {
-        //     console.log(e);
-        //     return [];
-        // }
-
         let diceRolls = [];
         if (numOfTroops >= 3) {
             diceRolls = new Array(3);
@@ -94,7 +91,7 @@ class Player {
         return React.createElement(
             CardBorder,
             {
-                style: { border: this.isPlayerTurn ? "1px solid black" : "" },
+                style: { borderRadius: "10px" },
                 key: this.id,
             },
             PlayerName,
@@ -107,37 +104,62 @@ class Player {
             children: this.name,
         });
         const PlayerTroops = React.createElement(Reserved, {
-            children: `Troops: ${this.remainingTroops}`,
+            children: `Reserve: ${this.remainingTroops}`,
         });
-        return React.createElement(
-            CardBorder,
-            {
+        const ColorText = React.createElement(Reserved, {
+            children: "Color:"
+        },);
+        const ColorIndicator = React.createElement(ColorBox, {
+            style: { backgroundColor: this.color }
+        })
+        const ColorContainerElement = React.createElement(ColorContainer, null, ColorText, ColorIndicator);
+
+        return React.createElement(CardBorder,{
                 style: {
-                    border: `${this.isPlayerTurn ? "1px solid black" : ""}`,
+                    backgroundColor: `${this.isPlayerTurn ? "#d9b51c" : "white"}`,
                 },
                 key: this.id,
             },
             PlayerName,
-            PlayerTroops
+            PlayerTroops, 
+            ColorContainerElement
         );
     }
 }
+// width: 100%;
+//     height: 12%;
+//     margin-left: 2%;
+//     margin-right: 2%;
 
+//     border-radius: 25px;
+//     background-color: white;
+//     justify-content: center;
+//     align-items: center;
+//     text-align: center;
+//     @media (${BREAKPOINTS.sm}) {
+//         width: 100%;
+//         height: 30%;
+//     }
+const ColorContainer = styled.div`
+    display: flex;
+    width: fit-content;
+`;
+const ColorLabel = styled.h6``;
+const ColorBox = styled.div`
+    height: 10px;
+    width: 10px;
+    margin-top: 5px;
+    margin-left: 23px;
+`;
 const CardBorder = styled.div`
-    width: 100%;
-    height: 12%;
-    margin-left: 2%;
-    margin-right: 2%;
-
-    border-radius: 25px;
+    width: fit-content;
+    height: fit-content;
+    padding: 10px;
+    border-radius: 15px;
     background-color: white;
     justify-content: center;
-    align-items: center;
-    text-align: center;
-    @media (${BREAKPOINTS.sm}) {
-        width: 100%;
-        height: 30%;
-    }
+    margin-right: 20px;
+    margin-left: 20px;
 `;
 const Name = styled.h5`
     font-size: 140%;
