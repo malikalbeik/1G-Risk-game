@@ -17,6 +17,7 @@ import GameSetup from "./views/game-setup";
 import fire from "./firebase";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Board from "./views/board/Board";
+import './index.css';
 
 // Redux dev tools
 const reduxDevTools =

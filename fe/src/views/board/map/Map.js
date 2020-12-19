@@ -1,9 +1,11 @@
 import React, { PureComponent } from "react";
 import styled from "styled-components";
 import Continent from "./Continent";
+import { NEIGHBOURS } from '../../../config/gameConstants';
 
 class Map {
-    constructor() {
+    constructor(players) {
+        this.players = players;
         this.continents = [
             new Continent("ASIA"),
             new Continent("AFRICA"),
@@ -31,17 +33,122 @@ class Map {
                 defendingCountry = this.countries[i];
             }
         } 
-    }
-
-    deployInitialTroop(selectedCountryId, player, numberOfTroops) {
-        for (let i = 0; i < this.continents.length; i++) {
-            if (this.continents[i].deployInitialTroopToCountry(selectedCountryId, player, numberOfTroops)) {
-                return true;
-            };
-        }
-        return false;        
+        return [attackingCountry, defendingCountry];
     }
     
+    deployTroop(selectedCountryId, player, numberOfTroops) {
+        let troopDeployed = false;
+        for (let i = 0; i < this.continents.length; i++) {
+            if (this.continents[i].deployTroopsToCountry(selectedCountryId, player, numberOfTroops)) {
+                troopDeployed = true;
+                break;
+            };
+        }
+        return troopDeployed;        
+    }
+
+    areInitialTroopsDeployed() {
+        let playerHasTroops = true;
+        for (let i = 0; i < this.players.length; i++) {
+            if (this.players[i].getRemainingTroops() === 0) {
+                playerHasTroops = false;
+            } else {
+                playerHasTroops = true;
+            }
+        }
+        return !playerHasTroops;
+    }
+
+    attackTerritory(attackingCountryId, defendingCountryId, numOfTroopsToAttackWith, numOfTroopsToDefendWith) {
+        const [attackingCountry, defendingCountry] = this.getAttakingAndDefendingCountry(attackingCountryId, defendingCountryId);
+        // Player cannot attack their own country
+        if (attackingCountry.getOccupyingPlayerId() === defendingCountry.getOccupyingPlayerId()) {
+            return false;
+        }
+        // Country with less than 2 troops cannot attack. //TODO: remove comment later
+        // if (attackingCountry.getNumberOfTroops() < 2) {
+        //     return "Country Troops less than 2"; 
+        // }
+        // Countries should be neighbours
+        if (!this.areAttackingAndDefendingCountryNeighbours(attackingCountry, defendingCountry)) {
+            return false;
+        }
+        let attackingPlayer, defendingPlayer = null;
+        for (let i = 0; i < this.players.length; i++) {
+            if (attackingCountry.getOccupyingPlayerId() === this.players[i].getId()) {
+                attackingPlayer = this.players[i];
+            }
+            if (defendingCountry.getOccupyingPlayerId() === this.players[i].getId()) {
+                defendingPlayer = this.players[i];
+            }
+        }
+        
+        // Roll dice for attacker and defender
+        let attackerDiceRolls = attackingPlayer.rollDiceBasedOnTroops(numOfTroopsToAttackWith);
+        let defenderDiceRolls = defendingPlayer.rollDiceBasedOnTroops(numOfTroopsToDefendWith);
+        
+        // Compare dice rolls
+        let attackerToopsAfterComparison = new Array(numOfTroopsToAttackWith);
+        let defenderTroopsAfterComparison = new Array(numOfTroopsToDefendWith);
+
+        for (let i = 0; i < defenderDiceRolls.length; i++) {
+            if (attackerDiceRolls[i] > defenderDiceRolls[i]) {
+                attackerToopsAfterComparison[i] = 1;
+                defenderTroopsAfterComparison[i] = -1;
+            } else {
+                attackerToopsAfterComparison[i] = -1;
+                defenderTroopsAfterComparison[i] = 1;
+            }
+        }
+
+        for (let i = 0; i < attackerToopsAfterComparison.length; i++) {
+            attackingCountry.setNumberOfTroops(attackerToopsAfterComparison[i]);
+        }
+        attackingCountry.verifyTroops();
+
+        for (let i = 0; i < defenderTroopsAfterComparison.length; i++) {
+            defendingCountry.setNumberOfTroops(defenderTroopsAfterComparison[i]);
+        }
+        defendingCountry.verifyTroops();
+
+        let attackerTroopsSum = attackerToopsAfterComparison.reduce((a, b) => a + b, 0);
+        let defenderTroopsSum = defenderTroopsAfterComparison.reduce((a, b) => a + b, 0);
+
+        if (attackerTroopsSum + attackingCountry.getNumberOfTroops() <= 0) {
+            attackingCountry.setOccupyingPlayer(defendingPlayer);
+        }
+        if (defenderTroopsSum + defendingCountry.getNumberOfTroops() <= 0) {
+            defendingCountry.setOccupyingPlayer(attackingPlayer);
+        }
+        
+        // if (!attackingCountry.incrementDecrementNumberOfTroops(attackerTroopsSum)) {
+        //     console.log("Attacker territory empty");
+        // }
+
+        // if (!defendingCountry.incrementDecrementNumberOfTroops(defenderTroopsSum)) {
+        //     console.log("Defender territory empty");
+        // }
+
+
+        console.log("attacker");
+        console.log(attackerDiceRolls);
+        console.log(attackerToopsAfterComparison);
+        console.log("defender");
+        console.log(defenderDiceRolls);
+        console.log(defenderTroopsAfterComparison);
+        // return attackerWon;
+    }
+
+    areAttackingAndDefendingCountryNeighbours(attackingCountry, defendingCountry) {
+        const neighboursOfAttackingCountry = NEIGHBOURS[attackingCountry.getId()].countries;
+        const defendingCountryId = defendingCountry.getId();
+        return neighboursOfAttackingCountry.findIndex(neighbour => neighbour === defendingCountryId) !== -1;
+    }
+
+    getCountries() {
+        return this.countries;
+    }
+
     getView() {
         const svg = React.createElement("svg",{
                 height: "477",

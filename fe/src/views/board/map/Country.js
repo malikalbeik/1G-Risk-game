@@ -9,6 +9,7 @@ class Country {
         this.numberOfTroops = 0;
         this.occupyingPlayerId = "";
         this.color = color;
+        this.defaultColor = color;
     }
 
     getId() {
@@ -37,6 +38,16 @@ class Country {
         this.color = color;
     }
 
+    verifyTroops() {
+        if (this.numberOfTroops < 0) {
+            this.numberOfTroops = 0;
+        }
+    }
+
+    setDefaultColor() {
+        this.setColor(this.defaultColor);
+    }
+
     getView() {
         const text = React.createElement("text", {
             x: this.textCoordinates[0],
@@ -44,7 +55,7 @@ class Country {
             fontFamily: "Verdana",
             fontSize: "15",
             fill: "white",
-            style: { pointerEvents: "none", fill: invert(this.color, true) },
+            style: { pointerEvents: "none", fill: invert(this.color, true), userSelect: "none" },
             children: this.numberOfTroops,
         });
         const path = React.createElement("path", {
