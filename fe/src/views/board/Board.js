@@ -9,6 +9,10 @@ import PlayerTurnDecider from "./PlayerTurnDecider";
 import TroopsGiver from "./TroopsGiver";
 
 class Board extends Component {
+    timer = undefined;
+    delay = 200;
+    prevent = false;
+
     constructor(props) {
         super(props);
 
@@ -16,11 +20,18 @@ class Board extends Component {
             players: [],
             selectedCountryId: "",
             initialSetupPhase: true,
-            turnsPhase: false,
-            playerWantsToAttack: false,
-            attackerWon: false,
-            numOfTroopsToAttackWith: 0,
-            numOfTroopsToDefendWith: 0,
+            // turnsPhase: false,
+            // playerWantsToAttack: false,
+            // attackerWon: false,
+            numOfAttackerTroops: 0,
+            numOfDefenderTroops: 0,
+            numOfTroopsToMove: 0,
+            attackOrSkipTurnPhase: false,
+            attackState: false,
+            maneuverState: false,
+            validity: false,
+            // countryToAttackOrManeuverTo: ''
+
         };
         this.allPlayers = [];
         this.initializePlayers();
@@ -54,8 +65,6 @@ class Board extends Component {
                     players[i].color,
                     false,
                     players[i].playerTurnNumber,
-                    0,
-                    this.trader
                 )
             );
         }
@@ -63,168 +72,63 @@ class Board extends Component {
 
     render() {
         const {
-            turnsPhase,
+            attackState,
+            maneuverState,
+            validity,
             selectedCountryId,
-            initialSetupPhase,
-            playerWantsToAttack,
-            attackerWon,
         } = this.state;
+
         return (
             <BoardContainer>
                 <InnerContainer>
-                    <Title>Players</Title>
                     {this.allPlayers.map((player) => player.getView())}
-                    {turnsPhase ? (
-                        <StyledButton
-                            onClick={() => {
-                                this.playerTurnDecider.endTurnForPlayer();
-                                this.setState({ playerWantsToAttack: false });
-                                this.forceUpdate();
-                            }}
-                        >
-                            End Turn
-                        </StyledButton>
-                    ) : null}
                 </InnerContainer>
-                {this.map.getView()}
-                <InnerContainer>
-                    <Name>
-                        Country Selected:
-                        <br />
-                        {selectedCountryId.replace(/ /g, "_").toUpperCase()}
-                    </Name>
-                    {initialSetupPhase ? (
-                        <StyledButton onClick={this.deployOneTroop}>
-                            Deploy 1 Troop
-                        </StyledButton>
-                    ) : null}
-                    {turnsPhase ? (
+                <MapContainer>
+                    {this.map.getView()}
+                    {selectedCountryId ? <span>{COUNTRIES[selectedCountryId].name} </span> : null}
+                    {attackState ?
                         <>
-                            <StyledButton onClick={this.deployTurnTroops}>
-                                Deploy 1 Troop (Turn)
-                            </StyledButton>
-                            <StyledButton
-                                onClick={() =>
-                                    this.setState({ playerWantsToAttack: true })
-                                }
-                            >
-                                Choose 2nd Country (Turn)
-                            </StyledButton>
-                            {playerWantsToAttack ? (
-                                <>
-                                    <StyledButton onClick={this.attackCountry}>
-                                        Attack
-                                    </StyledButton>
-                                    <input
-                                        value={
-                                            this.state.numOfTroopsToAttackWith
-                                        }
-                                        placeholder="troops to attack with"
-                                        onChange={(e) =>
-                                            this.setState({
-                                                numOfTroopsToAttackWith: parseInt(
-                                                    e.target.value
-                                                ),
-                                            })
-                                        }
-                                    ></input>
-                                    <input
-                                        value={
-                                            this.state.numOfTroopsToDefendWith
-                                        }
-                                        placeholder="troops to defend with"
-                                        onChange={(e) =>
-                                            this.setState({
-                                                numOfTroopsToDefendWith: parseInt(
-                                                    e.target.value
-                                                ),
-                                            })
-                                        }
-                                    ></input>
-                                </>
-                            ) : null}
+                            <input
+                                value={this.state.numOfAttackerTroops}
+                                onChange={e => this.setState({ numOfAttackerTroops: e.target.value })}
+                            />
+                            <input
+                                value={this.state.numOfDefenderTroops}
+                                onChange={e => this.setState({ numOfDefenderTroops: e.target.value })}
+                            />
                         </>
-                    ) : null}
-                    {this.state.attackStarted ? (
-                        <Name>{`${attackerWon ? "Attacker" : "Defender"
-                            } Won`}</Name>
-                    ) : null}
-                </InnerContainer>
+                        : null}
+                    {maneuverState ? <input
+                        value={this.state.numOfAttackerTroops}
+                        onChange={e => this.setState({ numOfAttackerTroops: e.target.value })} /> : null}
+                </MapContainer>
             </BoardContainer>
         );
     }
 
-    attackCountry = () => {
-        const {
-            selectedCountryId,
-            countryToAttackId,
-            numOfTroopsToAttackWith,
-            numOfTroopsToDefendWith,
-        } = this.state;
-        this.setState({ attackStarted: true });
-        if (
-            this.map.attackTerritory(
-                selectedCountryId,
-                countryToAttackId,
-                numOfTroopsToAttackWith,
-                numOfTroopsToDefendWith
-            )
-        ) {
-            this.setState({ attackerWon: true, maneuveringPhase: true });
-        } else {
-            this.setState({ attackerWon: false, maneuveringPhase: true });
-        }
-        this.forceUpdate();
-    };
-
     deployTurnTroops = () => {
         const { selectedCountryId, playerWantsToAttack } = this.state;
-        if (
-            this.map.deployTroop(
-                selectedCountryId,
-                this.playerTurnDecider.getPlayerWithTurn(),
-                1
-            )
-        ) {
+        if (this.map.deployTroop(selectedCountryId, this.playerTurnDecider.getPlayerWithTurn(), 1)) {
             this.forceUpdate();
         }
-        if (
-            this.playerTurnDecider
-                .getCurrentPlayerInfo()
-                .getRemainingTroops() === 0
-        ) {
-            // time to attack or skip
-            //TODO: Transition turn to next player
-            // this.playerTurnDecider.endTurnForPlayer();
-            // this.troopsGiver.giveTroopsToPlayer(this.playerTurnDecider.getCurrentPlayerInfo());
-            // this.setState({ playerDeployedGivenTroops: true });
+        if (this.playerTurnDecider.getCurrentPlayerInfo().getRemainingTroops() === 0) {
+            // this.map.resetCountryState();
+            this.forceUpdate();
+            this.setState({ turnsPhase: false, attackOrSkipTurnPhase: true, countryToAttackOrManeuverTo: '' });
         }
     };
 
-    deployOneTroop = () => {
+    deployInitialTroops = () => {
         const { selectedCountryId } = this.state;
-
-
-        if (
-            this.map.deployTroop(
-                selectedCountryId,
-                this.playerTurnDecider.getPlayerWithTurn(),
-                1
-            )
-        ) {
+        if (this.map.deployTroop(selectedCountryId, this.playerTurnDecider.getPlayerWithTurn(), 1)) {
             this.playerTurnDecider.endTurnForPlayer();
-            if (this.map.areInitialTroopsDeployed()) {
+            if (!this.map.doPlayersHaveTroops()) {
                 const currentPlayer = this.playerTurnDecider.getPlayerWithTurn();
-                // const currentPlayer = this.allPlayers[0];
                 this.troopsGiver.giveTroopsToPlayer(currentPlayer);
                 this.setState({ initialSetupPhase: false, turnsPhase: true });
             }
-
-
             this.forceUpdate();
         }
-
-
     };
 
     initializePlayers = () => {
@@ -247,54 +151,116 @@ class Board extends Component {
     };
 
     onClickListener = (e) => {
-        const { playerWantsToAttack, selectedCountryId } = this.state;
-
-        if (!playerWantsToAttack && this.countryIds.includes(e.target.id)) {
-            this.setState({ selectedCountryId: e.target.id });
-        }
-        if (
-            playerWantsToAttack &&
-            this.countryIds.includes(e.target.id) &&
-            e.target.id !== selectedCountryId
-        ) {
-            this.setState({ countryToAttackId: e.target.id });
-        }
+        this.timer = setTimeout(() => {
+            if (!this.prevent) {
+                this.doClickAction(e);
+            }
+            this.prevent = false;
+        }, this.delay);
     };
 
     onDoubleClickListener = (e) => {
-        const { selectedCountryId, initialSetupPhase, turnsPhase } = this.state;
-        const isCountryValid = this.countryIds.includes(e.target.id);
-        if (initialSetupPhase && selectedCountryId && isCountryValid) {
-            this.deployOneTroop();
-        }
-        if (turnsPhase && isCountryValid) {
-            this.deployTurnTroops();
-        }
+        clearTimeout(this.timer);
+        this.prevent = true;
+        this.doDoubleClickAction(e);
     };
+
+    doClickAction = (e) => {
+        const id = e.target.id;
+        const isCountryValid = this.countryIds.includes(id);
+        if (isCountryValid) {
+            this.setState({ selectedCountryId: id });
+            this.map.setSelectedCountry(id);
+            this.forceUpdate();
+        } else {
+            this.setState({ selectedCountryId: '' });
+            this.map.resetCountryState();
+            this.forceUpdate();
+        }
+    }
+
+    doDoubleClickAction = (e) => {
+        const { selectedCountryId, initialSetupPhase, turnsPhase, attackOrSkipTurnPhase } = this.state;
+        const id = e.target.id;
+        const isCountryValid = this.countryIds.includes(id);
+
+        // Allow initial deployment with double click
+        if (initialSetupPhase && isCountryValid) {
+            this.setState({ selectedCountryId: id });
+            this.map.setSelectedCountry(id);
+            this.deployInitialTroops();
+            this.forceUpdate();
+            return;
+        }
+
+        // Allow turn troops deployment
+        if (turnsPhase && isCountryValid) {
+            this.setState({ selectedCountryId: id }, () => {
+                this.map.setSelectedCountry(id);
+                this.deployTurnTroops();
+            });
+            this.forceUpdate();
+            return;
+        }
+
+        // Allow selecting another country, attacing and manevering
+        if (attackOrSkipTurnPhase && isCountryValid) {
+            this.setState({ countryToAttackOrManeuverTo: id }, () => {
+                const result = this.map.validateInitialMove(this.state.selectedCountryId, this.state.countryToAttackOrManeuverTo, this.playerTurnDecider.getCurrentPlayerInfo());
+                this.setState({
+                    attackState: result === "ATTACK",
+                    maneuverState: result === "MANEUVER",
+                    validity: result ? true : false
+                });
+            });
+            this.forceUpdate();
+        }
+    }
+
+    validateInput = (e, inputType) => {
+        if (e.t)
+            this.setState({
+                [inputType]: e.target.value
+            })
+    }
 }
+
+const MapContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    span {
+        padding-top: 5px;
+        font-size: xxx-large;
+    }
+`;
 
 const BoardContainer = styled.div`
     padding-top: 125px;
     display: flex;
+    flex-direction: column;
     background-color: #88b6da;
     height: 100vh;
 `;
-
+// width: 80%;
+//     height: 100%;
+//     margin-left: 2%;
+//     margin-right: 2%;
+//     padding: 25px;
+//     border-radius: 25px;
+//     background-color: white;
+//     justify-content: center;
+//     align-items: center;
+//     text-align: center;
+//     @media (${BREAKPOINTS.sm}) {
+//         width: 50%;
+//         height: 40%;
+//     }
 const InnerContainer = styled.div`
-    width: 80%;
-    height: 100%;
-    margin-left: 2%;
-    margin-right: 2%;
-    padding: 25px;
-    border-radius: 25px;
-    background-color: white;
+    display: flex;
+    flex-direction: row;
     justify-content: center;
-    align-items: center;
-    text-align: center;
-    @media (${BREAKPOINTS.sm}) {
-        width: 50%;
-        height: 40%;
-    }
+    padding-bottom: 18px;
 `;
 
 const StyledButton = styled(Button)`

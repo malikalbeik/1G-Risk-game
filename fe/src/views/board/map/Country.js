@@ -1,5 +1,6 @@
 import React from "react";
 import invert from "invert-color";
+import styled from 'styled-components';
 
 class Country {
     constructor(id, d, textCoordinates, color) {
@@ -10,6 +11,7 @@ class Country {
         this.occupyingPlayerId = "";
         this.color = color;
         this.defaultColor = color;
+        this.isActive = false;
     }
 
     getId() {
@@ -38,6 +40,13 @@ class Country {
         this.color = color;
     }
 
+    setActiveState(isActive) {
+        this.isActive = isActive;
+    }
+    getActiveState() {
+        return this.isActive;
+    }
+
     verifyTroops() {
         if (this.numberOfTroops < 0) {
             this.numberOfTroops = 0;
@@ -48,6 +57,13 @@ class Country {
         this.setColor(this.defaultColor);
     }
 
+    incrementDecerementTroops(numOfTroops) {
+        this.numberOfTroops += numOfTroops;
+        if (numOfTroops < 0) {
+            this.numberOfTroops = 0;
+        }
+    }
+
     getView() {
         const text = React.createElement("text", {
             x: this.textCoordinates[0],
@@ -55,7 +71,11 @@ class Country {
             fontFamily: "Verdana",
             fontSize: "15",
             fill: "white",
-            style: { pointerEvents: "none", fill: invert(this.color, true), userSelect: "none" },
+            style: { 
+                pointerEvents: "none", 
+                fill: invert(this.color, true), 
+                userSelect: "none" 
+            },
             children: this.numberOfTroops,
         });
         const path = React.createElement("path", {
@@ -63,12 +83,18 @@ class Country {
             d: this.d,
             stroke: invert(this.color, true),
             strokeMiterlimit: "4.32165",
-            style: { cursor: "pointer", fill: this.color },
+            style: { 
+                cursor: "pointer", 
+                fill: this.isActive ? "#d9b51c":  this.color ,
+                // opacity: this.isActive ? 0.3 : 1
+            },
         });
         const g = React.createElement("g", null, path, text);
 
         return g;
     }
 }
+
+
 
 export default Country;
