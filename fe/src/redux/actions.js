@@ -9,7 +9,7 @@ export const SET_CURRENT_COUNTRY = 'SET_CURRENT_COUNTRY';
 /**
  * Action Creators
  */
-export function setCurrentUser({ user }) {
+export function setCurrentUser(user) {
     return { type: SET_CURRENT_USER, user };
 }
 
