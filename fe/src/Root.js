@@ -7,6 +7,7 @@ import rootReducer from "./redux/reducers";
 import Router from "./views/router";
 
 import "bootstrap/dist/css/bootstrap.min.css";
+import './index.css';
 
 // Redux dev tools
 const reduxDevTools =
