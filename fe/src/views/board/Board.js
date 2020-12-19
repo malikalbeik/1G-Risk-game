@@ -146,9 +146,8 @@ class Board extends Component {
                         </>
                     ) : null}
                     {this.state.attackStarted ? (
-                        <Name>{`${
-                            attackerWon ? "Attacker" : "Defender"
-                        } Won`}</Name>
+                        <Name>{`${attackerWon ? "Attacker" : "Defender"
+                            } Won`}</Name>
                     ) : null}
                 </InnerContainer>
             </BoardContainer>
@@ -205,13 +204,13 @@ class Board extends Component {
     deployOneTroop = () => {
         const { selectedCountryId } = this.state;
 
-       
+
         if (
             this.map.deployTroop(
                 selectedCountryId,
                 this.playerTurnDecider.getPlayerWithTurn(),
                 1
-            )  
+            )
         ) {
             this.playerTurnDecider.endTurnForPlayer();
             if (this.map.areInitialTroopsDeployed()) {
@@ -220,12 +219,12 @@ class Board extends Component {
                 this.troopsGiver.giveTroopsToPlayer(currentPlayer);
                 this.setState({ initialSetupPhase: false, turnsPhase: true });
             }
-    
-            
+
+
             this.forceUpdate();
         }
 
-        
+
     };
 
     initializePlayers = () => {

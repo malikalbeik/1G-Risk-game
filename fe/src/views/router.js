@@ -84,12 +84,8 @@ const StyledAppWrapper = styled.div`
 `;
 
 
-const mapStateToProps = state => ({
-    currentUser: state.currentUser || {}
-});
-
 const mapDispatchToProps = {
     setCurrentUser: setCurrentUser,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Router);
+export default connect(null, mapDispatchToProps)(Router);

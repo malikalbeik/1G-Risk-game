@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React from "react";
 import styled from "styled-components";
 import Continent from "./Continent";
 import { NEIGHBOURS } from '../../../config/gameConstants';
@@ -32,10 +32,10 @@ class Map {
             } else if (this.countries[i].getId() === countryToAttackId) {
                 defendingCountry = this.countries[i];
             }
-        } 
+        }
         return [attackingCountry, defendingCountry];
     }
-    
+
     deployTroop(selectedCountryId, player, numberOfTroops) {
         let troopDeployed = false;
         for (let i = 0; i < this.continents.length; i++) {
@@ -44,7 +44,7 @@ class Map {
                 break;
             };
         }
-        return troopDeployed;        
+        return troopDeployed;
     }
 
     areInitialTroopsDeployed() {
@@ -82,11 +82,11 @@ class Map {
                 defendingPlayer = this.players[i];
             }
         }
-        
+
         // Roll dice for attacker and defender
         let attackerDiceRolls = attackingPlayer.rollDiceBasedOnTroops(numOfTroopsToAttackWith);
         let defenderDiceRolls = defendingPlayer.rollDiceBasedOnTroops(numOfTroopsToDefendWith);
-        
+
         // Compare dice rolls
         let attackerToopsAfterComparison = new Array(numOfTroopsToAttackWith);
         let defenderTroopsAfterComparison = new Array(numOfTroopsToDefendWith);
@@ -120,7 +120,7 @@ class Map {
         if (defenderTroopsSum + defendingCountry.getNumberOfTroops() <= 0) {
             defendingCountry.setOccupyingPlayer(attackingPlayer);
         }
-        
+
         // if (!attackingCountry.incrementDecrementNumberOfTroops(attackerTroopsSum)) {
         //     console.log("Attacker territory empty");
         // }
@@ -150,11 +150,11 @@ class Map {
     }
 
     getView() {
-        const svg = React.createElement("svg",{
-                height: "477",
-                width: "719",
-                viewBox: "0 0 719 477",
-            },
+        const svg = React.createElement("svg", {
+            height: "477",
+            width: "719",
+            viewBox: "0 0 719 477",
+        },
             ...this.continents.map(continent => continent.getView())
         );
         return React.createElement(MapContainer, {}, svg);
@@ -179,7 +179,7 @@ const MapContainer = styled.div`
     className="connection_arrows"
 >
     <g>
-        
+
     </g>
     <g>
         <path
