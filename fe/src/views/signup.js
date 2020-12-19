@@ -25,8 +25,15 @@ class SignUp extends PureComponent {
 
         fire.auth().createUserWithEmailAndPassword(email, password)
             .then((u) => {
-                console.log('Successfully Signed Up');
-                this.props.history.push('/')
+                const userRef = fire.firestore().doc(`users/${u.user.uid}`);
+                userRef.set({
+                    firstName,
+                    lastName
+                }).catch(error => {
+                    console.error("Error creating user document", error);
+                });
+
+                this.props.history.push('/');
             })
             .catch((err) => {
                 console.log('Error: ' + err.toString());

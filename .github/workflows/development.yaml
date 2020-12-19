@@ -32,6 +32,8 @@ jobs:
       working-directory: ./fe
       run: |
         yarn build
+      env:
+        CI: false
 
     - name: Deploy to S3
       uses: jakejarvis/s3-sync-action@master

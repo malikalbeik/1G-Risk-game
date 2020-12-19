@@ -1,36 +1,39 @@
-import React from "react";
+import React, { Component } from "react";
 import styled from "styled-components";
 import backgroundImage from "../assets/background.jpg";
 import { Container, Button } from "reactstrap";
 import { BREAKPOINTS } from "../config/gameConstants";
+import { connect } from 'react-redux'
 
-const App = () => {
- //TODO: REPLACE IS SIGNED IN GOTTEN FROM THE USER MODEL
-  var isSignedIn = false; 
-  if (isSignedIn) {
-    return (
-      <BackgroundContainer>
-        <CenteredContainer>
-          <InnerContainer>
-            <Title>Main Menu</Title>
-            <StyledButton>New Game</StyledButton>
-            <StyledButton>Load Game</StyledButton>
-          </InnerContainer>
-        </CenteredContainer>
-      </BackgroundContainer>
-    );
-  }else{
-    return (
+class App extends Component {
+  render() {
+    const { currentUser } = this.props;
+    const isSignedIn = !(Object.keys(currentUser).length === 0 && currentUser.constructor === Object);
+    if (isSignedIn) {
+      return (
         <BackgroundContainer>
           <CenteredContainer>
             <InnerContainer>
               <Title>Main Menu</Title>
-              <StyledButton href="/login" onClick={() => { this.close(); }}> Sign In </StyledButton>
-              <StyledButton href="/signup" onClick={() => { this.close(); }}>Sign Up</StyledButton>
+              <StyledButton href="/setup">New Game</StyledButton>
+              <StyledButton>Load Game</StyledButton>
             </InnerContainer>
           </CenteredContainer>
         </BackgroundContainer>
       );
+    } else {
+      return (
+        <BackgroundContainer>
+          <CenteredContainer>
+            <InnerContainer>
+              <Title>Main Menu</Title>
+              <StyledButton href="/login"> Sign In </StyledButton>
+              <StyledButton href="/signup">Sign Up</StyledButton>
+            </InnerContainer>
+          </CenteredContainer>
+        </BackgroundContainer>
+      );
+    }
   }
 };
 
@@ -105,4 +108,8 @@ const Title = styled.h2`
   }
 `;
 
-export default App;
+const mapStateToProps = state => ({
+  currentUser: state.currentUser || {}
+});
+
+export default connect(mapStateToProps)(App);
