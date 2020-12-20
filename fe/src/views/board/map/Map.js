@@ -130,9 +130,9 @@ class Map {
             return false;
         }
 
-        // Less troops in country than to attack with
-        if (numOfTroopsToAttackWith > attackingCountry.getNumberOfTroops()) {
-            console.log("Country has less troops than the number you want to attack with.");
+        // Less troops in country than to attack with or player attacking with all troops not leaving 1 behind
+        if (numOfTroopsToAttackWith >= attackingCountry.getNumberOfTroops()) {
+            console.log("Country has less troops than the number you want to attack with or you are attacking with all troops w/o leaving 1 behind");
             return false;
         }
 
@@ -196,9 +196,9 @@ class Map {
             return this.maneuverTroops(attackingCountryId, defendingCountryId, numOfTroopsToAttackWith);
         }
 
-        // if (!this.isAttackStateValid(attackingCountry, defendingCountry, numOfTroopsToAttackWith, numOfTroopsToDefendWith)) {
-        //     return false;
-        // }
+        if (!this.isAttackStateValid(attackingCountry, defendingCountry, numOfTroopsToAttackWith, numOfTroopsToDefendWith)) {
+             return false;
+        }
 
         const [attackingPlayer, defendingPlayer] = this.getAttackingAndDefendingPlayer(attackingCountry, defendingCountry);
 
@@ -241,8 +241,8 @@ class Map {
             attackingCountry.setNumberOfTroops(numOfTroopsToDefendWith - numOfBattlesDefenderLost);
             defendingCountry.setNumberOfTroops(defendingCountry.getNumberOfTroops() - numOfTroopsToDefendWith);
             return {
-                won: true,
-                message: "TERRITORY_OCCUPIED"
+                won: false,
+                message: "ATTACK_LOST"
             }
         }
         if (defendingCountry.getNumberOfTroops() === 0) {
@@ -250,8 +250,8 @@ class Map {
             defendingCountry.setNumberOfTroops(numOfTroopsToAttackWith - numOfBattlesAttackerLost);
             attackingCountry.setNumberOfTroops(attackingCountry.getNumberOfTroops() - (numOfTroopsToAttackWith));
             return {
-                won: false,
-                message: "ATTACK_LOST"
+                won: true,
+                message: "TERRITORY_OCCUPIED"
             }
         }
         return true;
