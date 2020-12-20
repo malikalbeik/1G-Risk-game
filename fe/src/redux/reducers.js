@@ -1,10 +1,6 @@
 import { combineReducers } from "redux";
 
-import {
-    SET_CURRENT_USER,
-    SET_CURRENT_PLAYER,
-    SET_CURRENT_COUNTRY,
-} from "./actions";
+import { SET_CURRENT_USER } from "./actions";
 
 /**
  * User Reducers
@@ -23,41 +19,5 @@ function userReducers(state = {}, action) {
     }
 }
 
-/**
- * Players Reducers
- */
-function playerReducers(state = {}, action) {
-    const { player } = action;
-
-    switch (action.type) {
-        // load current player to store
-        case SET_CURRENT_PLAYER:
-            return player;
-        // any other action: return the current state
-        default:
-            return state;
-    }
-}
-
-/**
- * Countries Reducers
- */
-function countryReducers(state = {}, action) {
-    const { country } = action;
-
-    switch (action.type) {
-        // load current player to store
-        case SET_CURRENT_COUNTRY:
-            return country;
-        // any other action: return the current state
-        default:
-            return state;
-    }
-}
-
 // export all above reducers combined
-export default combineReducers({
-    currentUser: userReducers,
-    players: playerReducers,
-    country: countryReducers,
-});
+export default combineReducers({ currentUser: userReducers });
