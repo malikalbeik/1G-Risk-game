@@ -393,3 +393,12 @@ export const CONTINENTS = [
   "SOUTH_AMERICA",
   "EUROPE",
 ];
+
+export const COUNTRIES_OF_CONTINENTS = {
+  asia: ["india", "middle_east", "siam", "china", "afghanistan", "ural", "siberia", "irkutsk", "mongolia", "japan", "kamchatka", "yakursk"],
+  africa: ["madagascar", "south_africa", "east_africa", "congo", "north_africa", "egypt"],
+  australia: ["indonesia", "new_guinea", "eastern_australia", "western_australia"],
+  north_america: ["alaska", "northwest_territory", "alberta", "ontario", "quebec", "western_united_states", "eastern_uited_states", "central_america", "greenland"],
+  south_america: ["venezuela", "peru", "brazil", "argentina"],
+  europe: ["iceland", "great_britain", "western_europe", "southern_europe", "northern_europe", "scandinavia", "ukraine"],
+};
