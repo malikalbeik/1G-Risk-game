@@ -12,11 +12,3 @@ export const SET_CURRENT_COUNTRY = 'SET_CURRENT_COUNTRY';
 export function setCurrentUser(user) {
     return { type: SET_CURRENT_USER, user };
 }
-
-export function setCurrentPlayer({ player }) {
-    return { type: SET_CURRENT_PLAYER, player };
-}
-
-export function setCurrentCountry({ country }) {
-    return { type: SET_CURRENT_COUNTRY, country };
-}
