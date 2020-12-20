@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 
 import fire from "../../firebase";
 import Map from "./map/Map";
+import MapPaths from './map/MapPaths';
 import { BREAKPOINTS, COUNTRIES } from "../../config/gameConstants";
 import Player from "./Player";
 import PlayerTurnDecider from "./PlayerTurnDecider";
@@ -113,6 +114,7 @@ class Board extends Component {
                 </CardContainer>
                 <MapContainer>
                     {this.map.getView()}
+                    <MapPaths />
                     {selectedCountryId ? <span>{COUNTRIES[selectedCountryId].name} </span> : null}
                     <AttackerTroopsInput
                         value={this.state.numOfAttackerTroops}
@@ -281,6 +283,8 @@ class Board extends Component {
         this.forceUpdate();
     }
 }
+
+
 
 const CardContainer = styled.div`
     position: absolute;
