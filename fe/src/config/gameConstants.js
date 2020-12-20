@@ -402,3 +402,12 @@ export const COUNTRIES_OF_CONTINENTS = {
   south_america: ["venezuela", "peru", "brazil", "argentina"],
   europe: ["iceland", "great_britain", "western_europe", "southern_europe", "northern_europe", "scandinavia", "ukraine"],
 };
+
+export const ARMIES_PER_CONTINENT = {
+  asia: 7,
+  europe: 5,
+  north_america: 5,
+  africa: 3,
+  south_america: 2,
+  australia: 2,
+};
