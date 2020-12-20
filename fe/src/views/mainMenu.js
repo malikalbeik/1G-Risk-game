@@ -16,7 +16,7 @@ class App extends Component {
             <InnerContainer>
               <Title>Main Menu</Title>
               <StyledButton href="/setup">New Game</StyledButton>
-              <StyledButton>Load Game</StyledButton>
+              <StyledButton href="/load">Load Game</StyledButton>
             </InnerContainer>
           </CenteredContainer>
         </BackgroundContainer>
