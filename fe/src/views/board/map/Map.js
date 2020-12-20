@@ -24,6 +24,14 @@ class Map {
         }
     }
 
+
+    getAsJson() {
+        var result = {};
+        result.continents = this.continents;
+        result.coutries = this.countries;
+        return result
+    }
+
     setSelectedCountry(selectedCountry) {
         for (let i = 0; i < this.countries.length; i++) {
             if (selectedCountry === this.countries[i].getId()) {

@@ -9,6 +9,7 @@ import GameSetup from "./game-setup";
 import fire from "../firebase";
 import Board from "./board/Board";
 import About from "./about";
+import LoadGame from "./loadGame";
 
 import { BrowserRouter, Route } from "react-router-dom";
 import styled from "styled-components";
@@ -73,6 +74,7 @@ class Router extends Component {
                     <Route path="/setup" exact component={GameSetup} />
                     <Route path="/board" exact component={Board} />
                     <Route path="/about" exact component={About} />
+                    <Route path="/load" exact component={LoadGame} />
                 </StyledAppWrapper>
             </BrowserRouter>
         );

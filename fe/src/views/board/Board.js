@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { Button } from "reactstrap";
 import styled from "styled-components";
+import { connect } from 'react-redux'
 
+import fire from "../../firebase";
 import Map from "./map/Map";
 import { BREAKPOINTS, COUNTRIES } from "../../config/gameConstants";
 import Player from "./Player";
@@ -40,6 +42,9 @@ class Board extends Component {
         this.playerTurnDecider = new PlayerTurnDecider(this.allPlayers);
         this.allPlayers[0].setIsPlayerTurn(true);
         this.troopsGiver = new TroopsGiver(this.map.getCountries(), this.map.getContinents());
+
+        this.getAsJson = this.getAsJson.bind(this);
+        this.saveGame = this.saveGame.bind(this);
     }
 
     componentDidMount() {
@@ -58,6 +63,35 @@ class Board extends Component {
             this.allPlayers.push(new Player(players[i].name, players[i].id, players[i].reservePersonel, players[i].color, false, players[i].playerTurnNumber));
         }
     };
+
+    getAsJson() {
+        var result = {}
+        result.players = this.allPlayers;
+        result.map = this.map.getAsJson();
+        return result
+    }
+
+    async saveGame(gameName) {
+        if (!this.props.currentUser)
+            return;
+        const userRef = fire.firestore().doc(`users/${this.props.currentUser.uid}`);
+        var gameData = {}
+        var savedGameName = "game-" + gameName;
+        gameData[savedGameName] = JSON.parse(JSON.stringify(this.getAsJson()));
+        console.log(gameData);
+        userRef.set(gameData, { merge: true })
+            .catch(error => {
+                console.error("Error saving game", error);
+            });
+    }
+
+    async loadGame(gameName) {
+        if (!this.props.currentUser)
+            return;
+        const userRef = fire.firestore().doc(`users/${this.props.currentUser.uid}`);
+        // var data = await userRef.get()
+        var savedGameName = "game-" + gameName;;
+    }
 
     render() {
         const {
@@ -80,34 +114,34 @@ class Board extends Component {
                 <MapContainer>
                     {this.map.getView()}
                     {selectedCountryId ? <span>{COUNTRIES[selectedCountryId].name} </span> : null}
-                        <AttackerTroopsInput
-                            value={this.state.numOfAttackerTroops}
-                            onChange={e => this.validateInput(e, "numOfAttackerTroops")}
-                            style={{ zIndex: attackState? "1000" : "-1" }}
-                        />
-                        <DefenderTroopsInput
-                            value={this.state.numOfDefenderTroops}
-                            onChange={e => this.validateInput(e, "numOfDefenderTroops")}
-                            style={{ zIndex: attackState? "1000" : "-1" }}
-                        />
-                        {!initialSetupPhase? <ActionButton 
-                            onClick={() => {
-                                this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops)  
-                            }}
-                        >
-                            Attack
+                    <AttackerTroopsInput
+                        value={this.state.numOfAttackerTroops}
+                        onChange={e => this.validateInput(e, "numOfAttackerTroops")}
+                        style={{ zIndex: attackState ? "1000" : "-1" }}
+                    />
+                    <DefenderTroopsInput
+                        value={this.state.numOfDefenderTroops}
+                        onChange={e => this.validateInput(e, "numOfDefenderTroops")}
+                        style={{ zIndex: attackState ? "1000" : "-1" }}
+                    />
+                    {!initialSetupPhase ? <ActionButton
+                        onClick={() => {
+                            this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops)
+                        }}
+                    >
+                        Attack
                         </ActionButton> : null}
-                    {maneuverState ? 
+                    {maneuverState ?
                         <>
                             <AttackerTroopsInput
-                                    value={this.state.numOfAttackerTroops}
-                                    onChange={e => this.validateInput(e, "numOfAttackerTroops")}
-                            /> 
-                            <ActionButton 
+                                value={this.state.numOfAttackerTroops}
+                                onChange={e => this.validateInput(e, "numOfAttackerTroops")}
+                            />
+                            <ActionButton
                                 onClick={() => {
-                                    this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops)  
+                                    this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops)
                                 }}
-                            >{attackState? "Attack" : "Maneuver"} </ActionButton>
+                            >{attackState ? "Attack" : "Maneuver"} </ActionButton>
                         </>
                         : null}
                     {!initialSetupPhase ? <EndButton onClick={() => this.endTurnForPlayer(true)}>End Turn</EndButton> : null}
@@ -402,4 +436,8 @@ const Name = styled.h5`
     }
 `;
 
-export default Board;
+const mapStateToProps = state => ({
+    currentUser: state.currentUser || {}
+});
+
+export default connect(mapStateToProps)(Board);

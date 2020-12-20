@@ -15,7 +15,7 @@ class Player {
     }
 
     getName() {
-        return name;
+        return this.name;
     }
 
     setName(name) {
