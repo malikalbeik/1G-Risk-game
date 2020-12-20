@@ -277,9 +277,8 @@ class Map {
             console.log("Departing country has 1 toop only.");
             return false;
         }
-
-        departingCountry.setNumberOfTroops(parseInt(departingCountry.getNumberOfTroops() - numOfTroops));
-        destinationCountry.setNumberOfTroops(parseInt(destinationCountry.getNumberOfTroops() + numOfTroops));
+        departingCountry.setNumberOfTroops(departingCountry.getNumberOfTroops() - parseInt(numOfTroops));
+        destinationCountry.setNumberOfTroops(destinationCountry.getNumberOfTroops() + parseInt(numOfTroops));
 
         return true;
     }
