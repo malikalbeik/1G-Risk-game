@@ -112,26 +112,6 @@ class Board extends Component {
                 <MapContainer>
                     {this.map.getView()}
                     {selectedCountryId ? <span>{COUNTRIES[selectedCountryId].name} </span> : null}
-<<<<<<< HEAD
-                        <AttackerTroopsInput
-                            value={this.state.numOfAttackerTroops}
-                            onChange={e => this.validateInput(e, "numOfAttackerTroops")}
-                            style={{ zIndex: attackState? "1000" : "-1" }}
-                        />
-                        <DefenderTroopsInput
-                            value={this.state.numOfDefenderTroops}
-                            onChange={e => this.validateInput(e, "numOfDefenderTroops")}
-                            style={{ zIndex: attackState? "1000" : "-1" }}
-                        />
-                        {!initialSetupPhase? <ActionButton 
-                            onClick={() => {
-                                this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops)  
-                            }}
-                        >
-                            Attack
-                        </ActionButton> : null}
-                    {maneuverState ? 
-=======
                     <AttackerTroopsInput
                         value={this.state.numOfAttackerTroops}
                         onChange={e => this.validateInput(e, "numOfAttackerTroops")}
@@ -142,15 +122,14 @@ class Board extends Component {
                         onChange={e => this.validateInput(e, "numOfDefenderTroops")}
                         style={{ zIndex: attackState ? "1000" : "-1" }}
                     />
-                    <ActionButton
+                    {!initialSetupPhase ? <ActionButton
                         onClick={() => {
                             this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops)
                         }}
                     >
                         Attack
-                        </ActionButton>
+                        </ActionButton> : null}
                     {maneuverState ?
->>>>>>> 7fa7058 (feat: added save game functionality)
                         <>
                             <AttackerTroopsInput
                                 value={this.state.numOfAttackerTroops}
