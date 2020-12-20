@@ -196,9 +196,9 @@ class Map {
             return this.maneuverTroops(attackingCountryId, defendingCountryId, numOfTroopsToAttackWith);
         }
 
-        if (!this.isAttackStateValid(attackingCountry, defendingCountry, numOfTroopsToAttackWith, numOfTroopsToDefendWith)) {
-            return false;
-        }
+        // if (!this.isAttackStateValid(attackingCountry, defendingCountry, numOfTroopsToAttackWith, numOfTroopsToDefendWith)) {
+        //     return false;
+        // }
 
         const [attackingPlayer, defendingPlayer] = this.getAttackingAndDefendingPlayer(attackingCountry, defendingCountry);
 
@@ -240,11 +240,19 @@ class Map {
             attackingCountry.setOccupyingPlayer(defendingPlayer);
             attackingCountry.setNumberOfTroops(numOfTroopsToDefendWith - numOfBattlesDefenderLost);
             defendingCountry.setNumberOfTroops(defendingCountry.getNumberOfTroops() - numOfTroopsToDefendWith);
+            return {
+                won: true,
+                message: "TERRITORY_OCCUPIED"
+            }
         }
         if (defendingCountry.getNumberOfTroops() === 0) {
             defendingCountry.setOccupyingPlayer(attackingPlayer);
             defendingCountry.setNumberOfTroops(numOfTroopsToAttackWith - numOfBattlesAttackerLost);
             attackingCountry.setNumberOfTroops(attackingCountry.getNumberOfTroops() - (numOfTroopsToAttackWith));
+            return {
+                won: false,
+                message: "ATTACK_LOST"
+            }
         }
         return true;
     }

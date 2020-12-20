@@ -15,8 +15,9 @@ class Player {
         this.isPlayerTurn = isPlayerTurn;
         this.turnNumber = turnNumber;
         this.diceRoll = null;
+        this.cards = [];
+        this.numOfCardTrades = 0;
     }
-
 
     getId() {
         return this.id;
@@ -26,6 +27,13 @@ class Player {
     }
     getTurnNumber() {
         return this.turnNumber;
+    }
+
+    getNumOfCardTrades() {
+        return this.numOfCardTrades;
+    }
+    setNumOfCardTrades(numOfCardTrades) {
+        this.numOfCardTrades = numOfCardTrades;
     }
 
     setDiceRoll(numOfPlayers) {
@@ -67,6 +75,10 @@ class Player {
         return this.noOfCards;
     }
 
+    getCards() {
+        return this.cards;
+    }
+
     rollDiceBasedOnTroops(numOfTroops) {
         let diceRolls = [];
         if (numOfTroops >= 3) {
@@ -81,22 +93,30 @@ class Player {
         return diceRolls.sort((a, b) => b - a);
     }
 
-    getView() {
-        const PlayerName = React.createElement(Name, {
-            children: this.name,
-        });
-        const PlayerTroops = React.createElement(Reserved, {
-            children: `Troops: ${this.remainingTroops}`,
-        });
-        return React.createElement(
-            CardBorder,
-            {
-                style: { borderRadius: "10px" },
-                key: this.id,
-            },
-            PlayerName,
-            PlayerTroops
-        );
+    addCard(card) {
+        this.cards.push(card);
+    }
+
+    removeCards(cards) {
+        for (let i = 0; i < this.cards.length; i++) {
+            for (let j = 0; j < cards.length; j++) {
+                if (
+                    this.cards[i].getCardType() === CARD_TYPES.WildType.type &&
+                    cards[j].getCardType() === CARD_TYPES.WildType.type
+                ) {
+                    this.cards.splice(i, 1);
+                }
+                if (
+                    cards[i].getCardType() === CARD_TYPES.TerritoryType.type &&
+                    cards[i].getInfantryType() ===
+                        this.cards[i].getInfantryType() &&
+                    cards[i].getTerritoryName() ===
+                        this.cards[i].getTerritoryName()
+                ) {
+                    this.cards.splice(i, 1);
+                }
+            }
+        }
     }
 
     getView() {
@@ -107,21 +127,30 @@ class Player {
             children: `Reserve: ${this.remainingTroops}`,
         });
         const ColorText = React.createElement(Reserved, {
-            children: "Color:"
-        },);
+            children: "Color:",
+        });
         const ColorIndicator = React.createElement(ColorBox, {
-            style: { backgroundColor: this.color }
-        })
-        const ColorContainerElement = React.createElement(ColorContainer, null, ColorText, ColorIndicator);
+            style: { backgroundColor: this.color },
+        });
+        const ColorContainerElement = React.createElement(
+            ColorContainer,
+            null,
+            ColorText,
+            ColorIndicator
+        );
 
-        return React.createElement(CardBorder,{
+        return React.createElement(
+            CardBorder,
+            {
                 style: {
-                    backgroundColor: `${this.isPlayerTurn ? "#d9b51c" : "white"}`,
+                    backgroundColor: `${
+                        this.isPlayerTurn ? "#d9b51c" : "white"
+                    }`,
                 },
                 key: this.id,
             },
             PlayerName,
-            PlayerTroops, 
+            PlayerTroops,
             ColorContainerElement
         );
     }

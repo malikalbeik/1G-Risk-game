@@ -1,9 +1,11 @@
 import { ARMIES_PER_CONTINENT } from '../../config/gameConstants';
+import CardTrader from './CardTrader';
 
 class TroopsGiver {
     constructor(countries, continents) {
         this.countries = countries;
         this.continents = continents;
+        this.cardsTrader = new CardTrader();
     }
 
     giveTroopsToPlayer(player) {
@@ -48,7 +50,10 @@ class TroopsGiver {
         }
         return numOfTerritories;
     }
-    
+ 
+    tradeCards(cards) {
+        console.log(this.cardsTrader.tradeCards(cards));
+    }
 }
 
 export default TroopsGiver;

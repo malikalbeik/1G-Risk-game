@@ -1,0 +1,9 @@
+.slidingPane {
+
+    position: absolute;
+    top: 100px;
+    width: 30%;
+}
+.slidingPaneOverlay {
+    width: 30%;
+}

@@ -45,7 +45,7 @@ class CardDeck {
       this.cards[number1] = this.cards[number2];
       this.cards[number2] = temp;
     }
-    console.log("Cards Shuffled ");
+    return "CARDS_SHUFFLED";
   }
 }
 

@@ -16,6 +16,7 @@ class PlayerTurnDecider {
         this.players[this.indexOfPlayerWithTurn].setIsPlayerTurn(false);
         this.indexOfPlayerWithTurn = (this.indexOfPlayerWithTurn + 1) % this.players.length;
         this.players[this.indexOfPlayerWithTurn].setIsPlayerTurn(true);
+        return true;
     }
 
     getNextPlayer() {

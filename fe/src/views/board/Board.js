@@ -1,14 +1,18 @@
 import React, { Component } from "react";
-import { Button } from "reactstrap";
 import styled from "styled-components";
 import { connect } from 'react-redux'
-
+import { withAlert } from "react-alert";
+import SlidingPane from "react-sliding-pane";
+import "react-sliding-pane/dist/react-sliding-pane.css";
 import fire from "../../firebase";
 import Map from "./map/Map";
 import { BREAKPOINTS, COUNTRIES } from "../../config/gameConstants";
 import Player from "./Player";
 import PlayerTurnDecider from "./PlayerTurnDecider";
 import TroopsGiver from "./TroopsGiver";
+import CardDeck from './CardDeck';
+import CardTrader from "./CardTrader";
+import './index.css';
 
 class Board extends Component {
     timer = undefined;
@@ -29,9 +33,12 @@ class Board extends Component {
             attackOrSkipTurnPhase: false,
             attackState: false,
             maneuverState: false,
+            tradeCardsState: false,
             validity: false,
-            countryToAttackOrManeuverTo: ''
-
+            countryToAttackOrManeuverTo: '',
+            showCards: false,
+            clickedCardNumber: undefined,
+            currentPlayerSelectedCards: []
         };
         this.allPlayers = [];
         this.initializePlayers();
@@ -42,7 +49,8 @@ class Board extends Component {
         this.playerTurnDecider = new PlayerTurnDecider(this.allPlayers);
         this.allPlayers[0].setIsPlayerTurn(true);
         this.troopsGiver = new TroopsGiver(this.map.getCountries(), this.map.getContinents());
-
+        this.cardsDeck = new CardDeck();
+        this.cardsTrader = new CardTrader();
         this.getAsJson = this.getAsJson.bind(this);
         this.saveGame = this.saveGame.bind(this);
     }
@@ -78,7 +86,6 @@ class Board extends Component {
         var gameData = {}
         var savedGameName = "game-" + gameName;
         gameData[savedGameName] = JSON.parse(JSON.stringify(this.getAsJson()));
-        console.log(gameData);
         userRef.set(gameData, { merge: true })
             .catch(error => {
                 console.error("Error saving game", error);
@@ -101,15 +108,44 @@ class Board extends Component {
             countryToAttackOrManeuverTo,
             numOfAttackerTroops,
             numOfDefenderTroops,
-            initialSetupPhase
+            initialSetupPhase,
+            showCards,
+            currentPlayerSelectedCards
         } = this.state;
+        const { alert } = this.props;
+        const playerCards = this.playerTurnDecider.getCurrentPlayerInfo().getCards() || [];
+        
         return (
             <BoardContainer>
+                <SlidingPane
+                    className="slidingPane"
+                    isOpen={showCards}
+                    title={this.playerTurnDecider.getCurrentPlayerInfo().getName() + " Cards"}
+                    from="left"
+                    onRequestClose={() => {this.setState({ showCards: false, tradeCard: false })}}
+                    overlayClassName="slidingPaneOverlay"
+                >
+                    {playerCards && playerCards.length > 0 ?<RiskCardsContainer>
+                        {playerCards.map((card, index) => {
+                            return (
+                                <RiskCard key={index} onClick={() => this.cardClickHandler(card)}>
+                                    <CardType>{card.cardType}</CardType><br/>
+                                    <TerritoryName>{card.territoryName}</TerritoryName><br/>
+                                    <InfantryType>{card.infantaryType}</InfantryType><br/>
+                                </RiskCard>
+                            );
+                        })}
+                    </RiskCardsContainer> : null}
+                    <TradeButton onClick={this.tradeCard} disabled={currentPlayerSelectedCards.length !== 3}>Trade</TradeButton>
+                </SlidingPane>
                 <InnerContainer>
                     {this.allPlayers.map((player) => player.getView())}
                 </InnerContainer>
                 <CardContainer>
-                    <StyledCardsIcon />
+                    <StyledCardsIcon onClick={() => {
+                        this.setState({ showCards: !showCards, tradeCard: true })}
+                    }
+                    />
                 </CardContainer>
                 <MapContainer>
                     {this.map.getView()}
@@ -126,7 +162,27 @@ class Board extends Component {
                     />
                     {!initialSetupPhase ? <ActionButton
                         onClick={() => {
-                            this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops)
+                            const result = this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops)
+                            if (typeof result === "object") {
+                                if (result.won && result.message === "TERRITORY_OCCUPIED") {
+                                    alert.success(this.playerTurnDecider.getCurrentPlayerInfo().getName() + " won.");
+                                    const card = this.cardsDeck.getCard();
+                                    if (card) {
+                                        const currentPlayerId = this.playerTurnDecider.getCurrentPlayerInfo().getId();
+                                        for (let i = 0; i < this.allPlayers.length; i++) {
+                                            if (this.allPlayers[i].getId() === currentPlayerId) {
+                                                this.allPlayers[i].addCard(card);
+                                                break;
+                                            }
+                                        }
+                                        alert.success(this.playerTurnDecider.getCurrentPlayerInfo().getName() + " received a card.");
+                                    } else {
+                                        alert.error("No cards left to give.");
+                                    }
+                                } else {
+                                    alert.show(this.playerTurnDecider.getCurrentPlayerInfo().getName() + " lost.");
+                                }
+                            }
                         }}
                     >
                         Attack
@@ -139,7 +195,7 @@ class Board extends Component {
                             />
                             <ActionButton
                                 onClick={() => {
-                                    this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops)
+                                    const outcome = this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops);
                                 }}
                             >{attackState ? "Attack" : "Maneuver"} </ActionButton>
                         </>
@@ -150,6 +206,17 @@ class Board extends Component {
         );
     }
 
+    cardClickHandler = (card) => {
+        const { currentPlayerSelectedCards } = this.state;
+        for (let i = 0; i < currentPlayerSelectedCards.length; i++) {
+            if (JSON.stringify(currentPlayerSelectedCards[i]) === JSON.stringify(card)) {
+                return false;
+            }
+        }
+        currentPlayerSelectedCards.push(card);
+        this.setState({ currentPlayerSelectedCards: currentPlayerSelectedCards }, () => this.forceUpdate());
+    }
+
     deployTurnTroops = () => {
         const { selectedCountryId } = this.state;
         if (this.map.deployTroop(selectedCountryId, this.playerTurnDecider.getPlayerWithTurn(), 1)) {
@@ -158,17 +225,43 @@ class Board extends Component {
         if (this.playerTurnDecider.getCurrentPlayerInfo().getRemainingTroops() === 0) {
             // this.map.resetCountryState();
             this.forceUpdate();
+            if (this.playerTurnDecider.getCurrentPlayerInfo().getCards().length > 5) {
+                this.setState({ showCards: true });
+                return;
+            }
             this.setState({ turnsPhase: false, attackOrSkipTurnPhase: true, countryToAttackOrManeuverTo: '' });
         }
     };
 
+    tradeCard = () => {
+        const { currentPlayerSelectedCards } = this.state;
+        const currentPlayer = this.playerTurnDecider.getCurrentPlayerInfo(); 
+        if (currentPlayer.getNoOfCards() > 3) {
+            this.cardsTrader.setNoOfPreviousTrades(currentPlayer.getNumOfCardTrades());
+            currentPlayer.setNumOfCardTrades(currentPlayer.getNumOfCardTrades() - 1);
+            currentPlayer.setRemainingTroops(currentPlayer.getRemainingTroops() + this.cardsTrader.tradeCards(currentPlayerSelectedCards));
+            currentPlayer.removeCards(currentPlayerSelectedCards);
+            this.forceUpdate();
+        }
+        if (currentPlayer.getNoOfCards() < 5) {
+            this.setState({ showCards: true });
+        }
+        
+    }
+
     deployInitialTroops = () => {
+        const { alert } = this.props;
         const { selectedCountryId } = this.state;
         if (this.map.deployTroop(selectedCountryId, this.playerTurnDecider.getPlayerWithTurn(), 1)) {
             this.playerTurnDecider.endTurnForPlayer(false);
             if (!this.map.doPlayersHaveTroops()) {
                 const currentPlayer = this.playerTurnDecider.getPlayerWithTurn();
                 this.troopsGiver.giveTroopsToPlayer(currentPlayer);
+                if (this.cardsDeck.shuffleCards() === "CARDS_SHUFFLED") {
+                    alert.success("Cards Shuffled!");   
+                } else {
+                    alert.error("Card could not be shuffled");
+                }
                 this.setState({ initialSetupPhase: false, turnsPhase: true });
             }
             this.forceUpdate();
@@ -176,10 +269,11 @@ class Board extends Component {
     };
 
     endTurnForPlayer = (shouldValidatePlayerTroops) => {
-        this.playerTurnDecider.endTurnForPlayer(shouldValidatePlayerTroops);
-        this.troopsGiver.giveTroopsToPlayer(this.playerTurnDecider.getPlayerWithTurn());
-        this.setState({ attackOrSkipTurnPhase: false, turnsPhase: true, attackState: false, maneuverState: false, });
-        this.forceUpdate();
+        if (this.playerTurnDecider.endTurnForPlayer(shouldValidatePlayerTroops)) {
+            this.troopsGiver.giveTroopsToPlayer(this.playerTurnDecider.getPlayerWithTurn());
+            this.setState({ attackOrSkipTurnPhase: false, turnsPhase: true, attackState: false, maneuverState: false, });
+            this.forceUpdate();
+        }
     }
 
     initializePlayers = () => {
@@ -231,7 +325,7 @@ class Board extends Component {
     }
 
     doDoubleClickAction = (e) => {
-        const { selectedCountryId, initialSetupPhase, turnsPhase, attackOrSkipTurnPhase } = this.state;
+        const { showCards, initialSetupPhase, turnsPhase, attackOrSkipTurnPhase } = this.state;
         const id = e.target.id;
         const isCountryValid = this.countryIds.includes(id);
 
@@ -245,7 +339,7 @@ class Board extends Component {
         }
 
         // Allow turn troops deployment
-        if (turnsPhase && isCountryValid) {
+        if (turnsPhase && isCountryValid && !showCards) {
             this.setState({ selectedCountryId: id }, () => {
                 this.map.setSelectedCountry(id);
                 this.deployTurnTroops();
@@ -282,6 +376,32 @@ class Board extends Component {
     }
 }
 
+const RiskCardsContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    position: relative;
+`;
+const RiskCard = styled.div`
+    background-color: lightgrey;
+    width: fit-content;
+    border-radius: 7px;
+    padding: 5px;
+    text-align: center;
+    margin-top: 2px;
+    margin-left: -36px;
+    min-width: 106px;
+    border: 1px solid black;
+`;
+const CardType = styled.span`
+    text-decoration: underline;
+`;
+const TerritoryName = styled.span`
+    font-size: 18px;
+`;
+const InfantryType = styled.span`
+    font-size: 12px;
+`;
+
 const CardContainer = styled.div`
     position: absolute;
     display: block;
@@ -289,6 +409,10 @@ const CardContainer = styled.div`
     top: 250px;
     width: fit-content;
     height: fit-content;
+`;
+
+const CardsDisplay = styled.div`
+    
 `;
 
 const StyledCardsIcon = styled.i`
@@ -338,6 +462,31 @@ const EndButton = styled.button`
     }
     :focus {
         outline: 0;
+    }
+`;
+
+const TradeButton = styled.button`
+    margin-left: -27px !important;
+    background-color: #4a934a;
+    color: white;
+    font-size: 90%;
+    border: none;
+    border-radius: 5px;
+    width: 88px;
+    height: 35px;
+    outline: none;
+    :hover {
+        background-color: white;
+        color: #4a934a;
+        border: 3px solid #4a934a;
+    }
+    :focus {
+        outline: 0;
+    }
+    :disabled {
+        background-color: white;
+        color: #4a934a;
+        border: 3px solid #4a934a;
     }
 `;
 const AttackerTroopsInput = styled.input`
@@ -440,4 +589,4 @@ const mapStateToProps = state => ({
     currentUser: state.currentUser || {}
 });
 
-export default connect(mapStateToProps)(Board);
+export default withAlert()(connect(mapStateToProps)(Board));

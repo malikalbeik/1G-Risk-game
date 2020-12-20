@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import { positions, Provider } from "react-alert";
+import AlertTemplate from "react-alert-template-basic";
+
 import NavBar from "./components/navBar";
 
 // Pages
@@ -17,6 +20,11 @@ import styled from "styled-components";
 // Redux Actions
 import { connect } from 'react-redux'
 import { setCurrentUser } from "../redux/actions"
+
+const options = {
+    timeout: 5000,
+    position: positions.BOTTOM_CENTER
+};
 
 class Router extends Component {
     constructor(props) {
@@ -67,15 +75,17 @@ class Router extends Component {
         return (
             <BrowserRouter>
                 <NavBar />
-                <StyledAppWrapper>
-                    <Route path="/" exact component={App} />
-                    <Route path="/login" exact component={Login} />
-                    <Route path="/signup" exact component={SignUp} />
-                    <Route path="/setup" exact component={GameSetup} />
-                    <Route path="/board" exact component={Board} />
-                    <Route path="/about" exact component={About} />
-                    <Route path="/load" exact component={LoadGame} />
-                </StyledAppWrapper>
+                <Provider template={AlertTemplate} {...options}>
+                    <StyledAppWrapper>
+                        <Route path="/" exact component={App} />
+                        <Route path="/login" exact component={Login} />
+                        <Route path="/signup" exact component={SignUp} />
+                        <Route path="/setup" exact component={GameSetup} />
+                        <Route path="/board" exact component={Board} />
+                        <Route path="/about" exact component={About} />
+                        <Route path="/load" exact component={LoadGame} />
+                    </StyledAppWrapper>
+                </Provider>
             </BrowserRouter>
         );
     }

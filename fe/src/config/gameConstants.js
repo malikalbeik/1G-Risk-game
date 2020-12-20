@@ -80,8 +80,8 @@ export const TROOP_TYPES = {
 };
 
 export const CARD_TYPES = {
-  TerritoryType: { type: "Territory Card" },
-  WildType: { type: "Wild Card" },
+  TerritoryType: { type: "Territory" },
+  WildType: { type: "Wild" },
 };
 
 export const WILDCARDS = [
