@@ -66,7 +66,8 @@ class Board extends Component {
             selectedCountryId,
             countryToAttackOrManeuverTo,
             numOfAttackerTroops,
-            numOfDefenderTroops
+            numOfDefenderTroops,
+            initialSetupPhase
         } = this.state;
         console.log(this.state);
         return (
@@ -87,13 +88,13 @@ class Board extends Component {
                             onChange={e => this.validateInput(e, "numOfDefenderTroops")}
                             style={{ zIndex: attackState? "1000" : "-1" }}
                         />
-                        <ActionButton 
+                        {!initialSetupPhase? <ActionButton 
                             onClick={() => {
                                 this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops)  
                             }}
                         >
                             Attack
-                        </ActionButton>
+                        </ActionButton> : null}
                     {maneuverState ? 
                         <>
                             <AttackerTroopsInput
@@ -107,7 +108,7 @@ class Board extends Component {
                             >{attackState? "Attack" : "Maneuver"} </ActionButton>
                         </>
                         : null}
-                    <EndButton onClick={() => this.endTurnForPlayer(true)}>End Turn</EndButton>
+                    {!initialSetupPhase ? <EndButton onClick={() => this.endTurnForPlayer(true)}>End Turn</EndButton> : null}
                 </MapContainer>
             </BoardContainer>
         );
