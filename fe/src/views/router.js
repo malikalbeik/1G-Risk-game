@@ -61,7 +61,6 @@ class Router extends Component {
         fire.auth().onAuthStateChanged(userAuth => {
             if (userAuth) {
                 this.getUserDocument(userAuth).then(user => {
-                    console.log(user);
                     this.setState({ user });
                     this.props.setCurrentUser(user)
                 });

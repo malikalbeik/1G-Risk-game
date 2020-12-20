@@ -2,15 +2,35 @@ import React from "react";
 import invert from "invert-color";
 
 class Country {
-    constructor(id, d, textCoordinates, color) {
+    constructor(id, d, textCoordinates, color, countryJson = null) {
         this.id = id;
         this.d = d;
         this.textCoordinates = textCoordinates;
-        this.numberOfTroops = 0;
-        this.occupyingPlayerId = "";
-        this.color = color;
-        this.defaultColor = color;
-        this.isActive = false;
+        if (countryJson) {
+            this.id = countryJson.id;
+            this.color = countryJson.color;
+            this.defaultColor = countryJson.defaultColor;
+            this.isActive = countryJson.isActive;
+            this.numberOfTroops = countryJson.numberOfTroops;
+            this.occupyingPlayerId = countryJson.occupyingPlayerId;
+        } else {
+            this.numberOfTroops = 0;
+            this.occupyingPlayerId = "";
+            this.color = color;
+            this.defaultColor = color;
+            this.isActive = false;
+        }
+    }
+
+    getAsJson() {
+        var result = {};
+        result.color = this.color;
+        result.defaultColor = this.defaultColor;
+        result.id = this.id;
+        result.isActive = this.isActive;
+        result.numberOfTroops = this.numberOfTroops;
+        result.occupyingPlayerId = this.occupyingPlayerId;
+        return result
     }
 
     getId() {
@@ -70,10 +90,10 @@ class Country {
             fontFamily: "Verdana",
             fontSize: "15",
             fill: "white",
-            style: { 
-                pointerEvents: "none", 
-                fill: invert(this.color, true), 
-                userSelect: "none" 
+            style: {
+                pointerEvents: "none",
+                fill: invert(this.color, true),
+                userSelect: "none"
             },
             children: this.numberOfTroops,
         });
@@ -82,9 +102,9 @@ class Country {
             d: this.d,
             stroke: invert(this.color, true),
             strokeMiterlimit: "4.32165",
-            style: { 
-                cursor: "pointer", 
-                fill: this.isActive ? "#d9b51c":  this.color ,
+            style: {
+                cursor: "pointer",
+                fill: this.isActive ? "#d9b51c" : this.color,
                 // opacity: this.isActive ? 0.3 : 1
             },
         });

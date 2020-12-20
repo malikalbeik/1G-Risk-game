@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import {
+  Button, Modal, ModalHeader, ModalBody, ModalFooter, Input
+} from "reactstrap";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { withAlert } from "react-alert";
@@ -39,21 +42,33 @@ class Board extends Component {
       showCards: false,
       clickedCardNumber: undefined,
       currentPlayerSelectedCards: [],
+      ShowSavemodal: false,
+      gameName: '',
     };
-    this.allPlayers = [];
-    this.initializePlayers();
-    this.map = new Map(this.allPlayers);
-    this.countryIds = Object.values(COUNTRIES).map((country) => country.value);
+
+    if (this.props.history.location.state.savedGame) {
+      var gameData = this.props.history.location.state.savedGame.gameData;
+      this.allPlayers = [];
+      this.initializePlayers(gameData);
+      this.map = new Map(this.allPlayers, gameData);
+    } else {
+      this.allPlayers = [];
+      this.initializePlayers();
+      this.map = new Map(this.allPlayers);
+    }
+    this.countryIds = Object.values(COUNTRIES).map(
+      (country) => country.value
+    );
     this.playerTurnDecider = new PlayerTurnDecider(this.allPlayers);
     this.allPlayers[0].setIsPlayerTurn(true);
-    this.troopsGiver = new TroopsGiver(
-      this.map.getCountries(),
-      this.map.getContinents()
-    );
+    this.troopsGiver = new TroopsGiver(this.map.getCountries(), this.map.getContinents());
+
     this.cardsDeck = new CardDeck();
     this.cardsTrader = new CardTrader();
+
     this.getAsJson = this.getAsJson.bind(this);
     this.saveGame = this.saveGame.bind(this);
+    this.toggleSaveGameModal = this.toggleSaveGameModal.bind(this);
   }
 
   componentDidMount() {
@@ -66,45 +81,40 @@ class Board extends Component {
     document.removeEventListener("dblclick", this.onDoubleClickListener);
   }
 
-  initializePlayers = () => {
-    const { players } = this.props.history.location.state;
-    for (let i = 0; i < players.length; i++) {
-      this.allPlayers.push(
-        new Player(
-          players[i].name,
-          players[i].id,
-          players[i].reservePersonel,
-          players[i].color,
-          false,
-          players[i].playerTurnNumber
-        )
-      );
-    }
-  };
-
   getAsJson() {
-    var result = {};
+    var result = {}
     result.players = this.allPlayers;
     result.map = this.map.getAsJson();
-    return result;
+    return result
   }
 
-  async saveGame(gameName) {
-    if (!this.props.currentUser) return;
+  async saveGame() {
+    const { gameName } = this.state;
+    this.toggleSaveGameModal()
+    if (!this.props.currentUser)
+      return;
     const userRef = fire.firestore().doc(`users/${this.props.currentUser.uid}`);
-    var gameData = {};
+    var gameData = {}
     var savedGameName = "game-" + gameName;
     gameData[savedGameName] = JSON.parse(JSON.stringify(this.getAsJson()));
-    userRef.set(gameData, { merge: true }).catch((error) => {
-      console.error("Error saving game", error);
-    });
+    userRef.set(gameData, { merge: true })
+      .catch(error => {
+        console.error("Error saving game", error);
+      });
   }
 
   async loadGame(gameName) {
-    if (!this.props.currentUser) return;
+    if (!this.props.currentUser)
+      return;
     const userRef = fire.firestore().doc(`users/${this.props.currentUser.uid}`);
-    // var data = await userRef.get()
-    var savedGameName = "game-" + gameName;
+    var data = await userRef.get()
+    data = data.data()
+    var savedGameName = "game-" + gameName;;
+    return data[savedGameName];
+  }
+
+  toggleSaveGameModal() {
+    this.setState({ ShowSavemodal: !this.state.ShowSavemodal })
   }
 
   render() {
@@ -118,10 +128,15 @@ class Board extends Component {
       initialSetupPhase,
       showCards,
       currentPlayerSelectedCards,
+      ShowSavemodal
     } = this.state;
+
     const { alert } = this.props;
     const playerCards =
       this.playerTurnDecider.getCurrentPlayerInfo().getCards() || [];
+
+    if (!this.allPlayers)
+      return null;
 
     return (
       <BoardContainer>
@@ -245,7 +260,7 @@ class Board extends Component {
                   if (result.won && result.message === "TERRITORY_OCCUPIED") {
                     alert.success(
                       this.playerTurnDecider.getCurrentPlayerInfo().getName() +
-                        " won."
+                      " won."
                     );
                     const card = this.cardsDeck.getCard();
                     if (card) {
@@ -269,7 +284,7 @@ class Board extends Component {
                   } else {
                     alert.show(
                       this.playerTurnDecider.getCurrentPlayerInfo().getName() +
-                        " lost."
+                      " lost."
                     );
                   }
                 }
@@ -304,6 +319,23 @@ class Board extends Component {
             </EndButton>
           ) : null}
         </MapContainer>
+        <div>
+          <SaveGameButton color="danger" onClick={this.toggleSaveGameModal}>Save Game</SaveGameButton>
+          <Modal isOpen={ShowSavemodal} toggle={this.toggleSaveGameModal} >
+            <ModalHeader toggle={this.toggleSaveGameModal}>Save Current Game</ModalHeader>
+            <ModalBody>
+              <Input placeholder="Game Name" rows={5} onChange={e => {
+                this.setState({
+                  gameName: e.target.value
+                })
+              }} />
+            </ModalBody>
+            <ModalFooter>
+              <Button color="primary" onClick={this.saveGame}>Save</Button>{' '}
+              <Button color="secondary" onClick={this.toggleSaveGameModal}>Cancel</Button>
+            </ModalFooter>
+          </Modal>
+        </div>
       </BoardContainer>
     );
   }
@@ -352,6 +384,7 @@ class Board extends Component {
     }
   };
 
+
   tradeCard = () => {
     const { currentPlayerSelectedCards } = this.state;
     const currentPlayer = this.playerTurnDecider.getCurrentPlayerInfo();
@@ -362,7 +395,7 @@ class Board extends Component {
       currentPlayer.setNumOfCardTrades(currentPlayer.getNumOfCardTrades() - 1);
       currentPlayer.setRemainingTroops(
         currentPlayer.getRemainingTroops() +
-          this.cardsTrader.tradeCards(currentPlayerSelectedCards)
+        this.cardsTrader.tradeCards(currentPlayerSelectedCards)
       );
       currentPlayer.removeCards(currentPlayerSelectedCards);
       this.forceUpdate();
@@ -370,6 +403,41 @@ class Board extends Component {
     if (currentPlayer.getNoOfCards() < 5) {
       this.setState({ showCards: true });
     }
+  };
+
+  initializePlayers = (gameData = null) => {
+    if (gameData) {
+      const { players } = gameData;
+      players.forEach(playerJson => {
+        let player = new Player(
+          playerJson.name,
+          playerJson.id,
+          playerJson.remainingTroops,
+          playerJson.color,
+          playerJson.isPlayerTurn,
+          playerJson.playerTurnNumber
+        );
+        player.setDiceRoll(players.length);
+        this.allPlayers.push(player);
+      })
+    } else {
+      const { players } = this.props.history.location.state;
+      for (let i = 0; i < players.length; i++) {
+        let player = new Player(
+          players[i].name,
+          players[i].id,
+          players[i].reservePersonel,
+          players[i].color,
+          false,
+          players[i].playerTurnNumber
+        );
+        player.setDiceRoll(players.length);
+        this.allPlayers.push(player);
+      }
+    }
+    this.allPlayers = this.allPlayers.sort(
+      (a, b) => b.getDiceRoll() - a.getDiceRoll()
+    );
   };
 
   deployInitialTroops = () => {
@@ -412,24 +480,24 @@ class Board extends Component {
     }
   };
 
-  initializePlayers = () => {
-    const { players } = this.props.history.location.state;
-    for (let i = 0; i < players.length; i++) {
-      let player = new Player(
-        players[i].name,
-        players[i].id,
-        players[i].reservePersonel,
-        players[i].color,
-        false,
-        players[i].playerTurnNumber
-      );
-      player.setDiceRoll(players.length);
-      this.allPlayers.push(player);
-    }
-    this.allPlayers = this.allPlayers.sort(
-      (a, b) => b.getDiceRoll() - a.getDiceRoll()
-    );
-  };
+  // initializePlayers = () => {
+  //   const { players } = this.props.history.location.state;
+  //   for (let i = 0; i < players.length; i++) {
+  //     let player = new Player(
+  //       players[i].name,
+  //       players[i].id,
+  //       players[i].reservePersonel,
+  //       players[i].color,
+  //       false,
+  //       players[i].playerTurnNumber
+  //     );
+  //     player.setDiceRoll(players.length);
+  //     this.allPlayers.push(player);
+  //   }
+  //   this.allPlayers = this.allPlayers.sort(
+  //     (a, b) => b.getDiceRoll() - a.getDiceRoll()
+  //   );
+  // };
 
   onClickListener = (e) => {
     this.timer = setTimeout(() => {
@@ -637,6 +705,11 @@ const TradeButton = styled.button`
     border: 3px solid #4a934a;
   }
 `;
+const SaveGameButton = styled(Button)`
+    position: absolute;
+    right: 10px;
+    top: 110px;
+`;
 const AttackerTroopsInput = styled.input`
   position: absolute;
   right: 0px;
@@ -768,3 +841,11 @@ const mapStateToProps = (state) => ({
 });
 
 export default withAlert()(connect(mapStateToProps)(Board));
+
+
+
+
+
+
+
+

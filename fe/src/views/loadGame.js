@@ -5,14 +5,14 @@ import fire from "../firebase";
 import { connect } from 'react-redux'
 import styled from "styled-components";
 import backgroundImage from "../assets/background.jpg"
-import { Button, Container, Col, Row, FormGroup, Input, Card, CardTitle, CardText } from 'reactstrap';
+import { Button, Container, Col, Row, FormGroup, Input, Card, CardTitle, CardText, CardBody } from 'reactstrap';
 
 class LoadGame extends PureComponent {
     constructor(props) {
         super(props);
 
         this.state = {
-            gameNames: [],
+            games: [],
         };
 
     }
@@ -26,23 +26,30 @@ class LoadGame extends PureComponent {
         const userRef = fire.firestore().doc(`users/${currentUser.uid}`);
         var userData = await userRef.get();
         userData = userData.data();
-        console.log(currentUser)
-        console.log(userData)
 
         for (var key of Object.keys(userData)) {
             if (key.startsWith("game-"))
-                result.push(key.replace("game-", ""));
+                result.push({ gameName: key.replace("game-", ""), gameData: userData[key] });
         }
 
-        if (JSON.stringify(result) !== JSON.stringify(this.state.gameNames)) {
+        result.sort((a, b) => (a.gameName > b.gameName) ? 1 : 0);
+        var newGameNames = result.map(game => game.gameName);
+        var oldGameNames = this.state.games.map(game => game.gameName);
+        newGameNames.sort();
+        oldGameNames.sort();
 
-            this.setState({ gameNames: result })
+        if (JSON.stringify(newGameNames) !== JSON.stringify(oldGameNames)) {
+            this.setState({ games: result })
         }
+    }
+
+    startGame(game) {
+        this.props.history.push('/board', { savedGame: game });
     }
 
     render() {
         this.getUserGames()
-        const { gameNames } = this.state;
+        const { games } = this.state;
 
         return (
             <BackgroundContainer>
@@ -51,10 +58,10 @@ class LoadGame extends PureComponent {
                         <h2>Load Game</h2>
                         <p>Choose a game to load, if you have no saved games you can start a new game here</p>
                         <CardsContainer>
-                            {gameNames.length > 0 && gameNames.map((gameName) => {
+                            {games.length > 0 && games.map((game) => {
                                 return (
-                                    <StyledCard key={gameName}>
-                                        <CardTitle tag="h5">{gameName}</CardTitle>
+                                    <StyledCard body key={game.gameName} onClick={() => this.startGame(game)}>
+                                        <CardBody tag="h5">{game.gameName}</CardBody>
                                     </StyledCard>
                                 )
                             })}
@@ -92,28 +99,21 @@ const InnerContainer = styled(Container)`
 
 const CardsContainer = styled(Container)`
     display: flex;
-
-`;
-
-
-const StyledButton = styled(Button)`
-  padding: 10px 50px;
-  font-size: large;
-  font-weight: bold;
-  background-color: #1d65a8;
-  color: white;
-
-  :hover {
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.24)
-  }
-
-  :active {
-    transform: translateY(2px);
-  }
+    flex-wrap: wrap;
+    justify-content: center;
 `;
 
 const StyledCard = styled(Card)`
+    padding: 5px;
     margin: 10px;
+    width: calc(50% - 20px);
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+
+    :hover {
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    }
 `;
 
 const mapStateToProps = state => ({
