@@ -1,33 +1,28 @@
 import React, { Component } from "react";
-import { BrowserRouter, Route } from "react-router-dom";
 
-import App from "./containers/App";
-import Login from "./views/login";
-import SignUp from "./views/signup";
-import Board from "./views/board";
+// Redux
+import { createStore } from "redux";
+import { Provider } from "react-redux";
+import rootReducer from "./redux/reducers";
+import Router from "./views/router";
 
-import "bootstrap-4-grid/css/grid.min.css";
-import "./index.scss";
+import "bootstrap/dist/css/bootstrap.min.css";
+import './index.css';
+
+// Redux dev tools
+const reduxDevTools =
+    window.__REDUX_DEVTOOLS_EXTENSION__ &&
+    window.__REDUX_DEVTOOLS_EXTENSION__();
+
+// Redux Store
+const store = createStore(rootReducer, reduxDevTools);
 
 class Root extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {};
-    }
-
     render() {
         return (
-            <div>
-                <BrowserRouter>
-                    <div>
-                        <Route path="/" exact component={App} />
-                        <Route path="/login" exact component={Login} />
-                        <Route path="/signup" exact component={SignUp} />
-                        <Route path="/board" exact component={Board} />
-                    </div>
-                </BrowserRouter>
-            </div>
+            <Provider store={store}>
+                <Router />
+            </Provider>
         );
     }
 }

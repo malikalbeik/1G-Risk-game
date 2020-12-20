@@ -1,6 +1,8 @@
 name: Development Build
 on:
   pull_request:
+    branches:
+      - develop
   push:
     branches:
       - develop
@@ -30,6 +32,8 @@ jobs:
       working-directory: ./fe
       run: |
         yarn build
+      env:
+        CI: false
 
     - name: Deploy to S3
       uses: jakejarvis/s3-sync-action@master
