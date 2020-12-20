@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 import { TwitterPicker } from 'react-color';
+
+import { BREAKPOINTS, COLORS } from "../../config/gameConstants";
 import RollDice from '../../animations/RollDice';
-import { BREAKPOINTS } from "../../config/gameConstants";
 import backgroundImage from "../../assets/background.jpg";
 import {
     Container, Button, Row, Col, FormGroup, Input, Label
@@ -100,9 +101,11 @@ class GameSetup extends Component {
                                                     </ColorContainer>
                                                     {this.state.displayColorPickers[index] ? <ColorPickerPopover>
                                                         <ColorPickerCover onClick={() => this.handleColorPickerClose(index)} />
+                                                        
                                                         <TwitterPicker
                                                             color="#36c"
                                                             triangle="top-left"
+                                                            colors= {COLORS}
                                                             onChange={color => {
                                                                 var players = this.state.players;
                                                                 players[index].color = color.hex;
