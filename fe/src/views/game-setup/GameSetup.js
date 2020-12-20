@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from "uuid";
 import { TwitterPicker } from 'react-color';
 
 import { BREAKPOINTS, COLORS } from "../../config/gameConstants";
-import RollDice from '../../animations/RollDice';
 import backgroundImage from "../../assets/background.jpg";
 import {
     Container, Button, Row, Col, FormGroup, Input, Label
@@ -138,7 +137,7 @@ class GameSetup extends Component {
             let players = [];
             for (let i = 0; i < val; i++) {
                 players.push({
-                    id: uuidv4(), playerTurnNumber: i, reservePersonel: 3//50 - (5 * val) 
+                    id: uuidv4(), playerTurnNumber: i, reservePersonel: 50 - (5 * val) 
                 });
             }
             this.setState({ numOfPlayersRecorded: true, players });
