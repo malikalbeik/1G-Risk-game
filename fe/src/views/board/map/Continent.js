@@ -4,6 +4,8 @@ import Country from "./Country";
 class Continent {
     constructor(continentName) {
         this.countries = this.getContinent(continentName);
+        this.continentName = continentName;
+        this.occupyingPlayerId = "";
     }
 
     getCountries() {
@@ -14,6 +16,21 @@ class Continent {
         return this.countries.filter(
             (country) => country.getId() === countryId
         );
+    }
+
+    getContinentName() {
+        return this.continentName;
+    }
+
+    doesPlayerOccupyContinent(playerId) {
+        for (let i = 0; i < this.countries.length; i++) {
+            if (playerId !== this.countries[i].getOccupyingPlayerId()) {
+                this.occupyingPlayerId = "";
+                return false;
+            }
+        }
+        this.occupyingPlayerId = playerId;
+        return this.continentName;
     }
 
     deployTroopsToCountry(selectedCountryId, player, numberOfTroops) {

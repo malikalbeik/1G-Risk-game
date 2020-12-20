@@ -176,9 +176,10 @@ class Map {
     attackTerritory(attackingCountryId, defendingCountryId, numOfTroopsToAttackWith, numOfTroopsToDefendWith) {
 
         const result = this.countryIdsToNames(attackingCountryId, defendingCountryId);
-        let [attackingCountry, defendingCountry] = null;
+        let attackingCountry, defendingCountry = null;
         if (result) {
-            [attackingCountry, defendingCountry] = result;
+            attackingCountry = result[0]; 
+            defendingCountry = result[1];
         } else {
             return false;
         }
@@ -292,6 +293,10 @@ class Map {
 
     getCountries() {
         return this.countries;
+    }
+
+    getContinents() {
+        return this.continents;
     }
 
     getView() {

@@ -72,7 +72,7 @@ class Player {
         if (numOfTroops >= 3) {
             diceRolls = new Array(3);
         } else {
-            diceRolls = new Array(numOfTroops);
+            diceRolls = new Array(parseInt(numOfTroops));
         }
         const numOfRolls = diceRolls.length;
         for (let i = 0; i < numOfRolls; i++) {

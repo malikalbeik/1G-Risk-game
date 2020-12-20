@@ -1,6 +1,5 @@
 import React from "react";
 import invert from "invert-color";
-import styled from 'styled-components';
 
 class Country {
     constructor(id, d, textCoordinates, color) {

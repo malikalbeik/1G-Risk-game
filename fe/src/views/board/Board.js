@@ -20,9 +20,7 @@ class Board extends Component {
             players: [],
             selectedCountryId: "",
             initialSetupPhase: true,
-            // turnsPhase: false,
-            // playerWantsToAttack: false,
-            // attackerWon: false,
+            turnsPhase: false,
             numOfAttackerTroops: 0,
             numOfDefenderTroops: 0,
             numOfTroopsToMove: 0,
@@ -30,7 +28,7 @@ class Board extends Component {
             attackState: false,
             maneuverState: false,
             validity: false,
-            // countryToAttackOrManeuverTo: ''
+            countryToAttackOrManeuverTo: ''
 
         };
         this.allPlayers = [];
@@ -41,7 +39,7 @@ class Board extends Component {
         );
         this.playerTurnDecider = new PlayerTurnDecider(this.allPlayers);
         this.allPlayers[0].setIsPlayerTurn(true);
-        this.troopsGiver = new TroopsGiver(this.map.getCountries());
+        this.troopsGiver = new TroopsGiver(this.map.getCountries(), this.map.getContinents());
     }
 
     componentDidMount() {
@@ -57,16 +55,7 @@ class Board extends Component {
     initializePlayers = () => {
         const { players } = this.props.history.location.state;
         for (let i = 0; i < players.length; i++) {
-            this.allPlayers.push(
-                new Player(
-                    players[i].name,
-                    players[i].id,
-                    players[i].reservePersonel,
-                    players[i].color,
-                    false,
-                    players[i].playerTurnNumber,
-                )
-            );
+            this.allPlayers.push(new Player(players[i].name, players[i].id, players[i].reservePersonel, players[i].color, false, players[i].playerTurnNumber));
         }
     };
 
@@ -74,10 +63,12 @@ class Board extends Component {
         const {
             attackState,
             maneuverState,
-            validity,
             selectedCountryId,
+            countryToAttackOrManeuverTo,
+            numOfAttackerTroops,
+            numOfDefenderTroops
         } = this.state;
-
+        console.log(this.state);
         return (
             <BoardContainer>
                 <InnerContainer>
@@ -86,28 +77,44 @@ class Board extends Component {
                 <MapContainer>
                     {this.map.getView()}
                     {selectedCountryId ? <span>{COUNTRIES[selectedCountryId].name} </span> : null}
-                    {attackState ?
+                        <AttackerTroopsInput
+                            value={this.state.numOfAttackerTroops}
+                            onChange={e => this.validateInput(e, "numOfAttackerTroops")}
+                            style={{ zIndex: attackState? "1000" : "-1" }}
+                        />
+                        <DefenderTroopsInput
+                            value={this.state.numOfDefenderTroops}
+                            onChange={e => this.validateInput(e, "numOfDefenderTroops")}
+                            style={{ zIndex: attackState? "1000" : "-1" }}
+                        />
+                        <ActionButton 
+                            onClick={() => {
+                                this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops)  
+                            }}
+                        >
+                            Attack
+                        </ActionButton>
+                    {maneuverState ? 
                         <>
-                            <input
-                                value={this.state.numOfAttackerTroops}
-                                onChange={e => this.setState({ numOfAttackerTroops: e.target.value })}
-                            />
-                            <input
-                                value={this.state.numOfDefenderTroops}
-                                onChange={e => this.setState({ numOfDefenderTroops: e.target.value })}
-                            />
+                            <AttackerTroopsInput
+                                    value={this.state.numOfAttackerTroops}
+                                    onChange={e => this.validateInput(e, "numOfAttackerTroops")}
+                            /> 
+                            <ActionButton 
+                                onClick={() => {
+                                    this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops)  
+                                }}
+                            >{attackState? "Attack" : "Maneuver"} </ActionButton>
                         </>
                         : null}
-                    {maneuverState ? <input
-                        value={this.state.numOfAttackerTroops}
-                        onChange={e => this.setState({ numOfAttackerTroops: e.target.value })} /> : null}
+                    <EndButton onClick={() => this.endTurnForPlayer(true)}>End Turn</EndButton>
                 </MapContainer>
             </BoardContainer>
         );
     }
 
     deployTurnTroops = () => {
-        const { selectedCountryId, playerWantsToAttack } = this.state;
+        const { selectedCountryId } = this.state;
         if (this.map.deployTroop(selectedCountryId, this.playerTurnDecider.getPlayerWithTurn(), 1)) {
             this.forceUpdate();
         }
@@ -121,7 +128,7 @@ class Board extends Component {
     deployInitialTroops = () => {
         const { selectedCountryId } = this.state;
         if (this.map.deployTroop(selectedCountryId, this.playerTurnDecider.getPlayerWithTurn(), 1)) {
-            this.playerTurnDecider.endTurnForPlayer();
+            this.playerTurnDecider.endTurnForPlayer(false);
             if (!this.map.doPlayersHaveTroops()) {
                 const currentPlayer = this.playerTurnDecider.getPlayerWithTurn();
                 this.troopsGiver.giveTroopsToPlayer(currentPlayer);
@@ -130,6 +137,13 @@ class Board extends Component {
             this.forceUpdate();
         }
     };
+
+    endTurnForPlayer = (shouldValidatePlayerTroops) => {
+        this.playerTurnDecider.endTurnForPlayer(shouldValidatePlayerTroops);
+        this.troopsGiver.giveTroopsToPlayer(this.playerTurnDecider.getPlayerWithTurn());
+        this.setState({ attackOrSkipTurnPhase: false, turnsPhase: true, attackState: false, maneuverState: false, });
+        this.forceUpdate();
+    }
 
     initializePlayers = () => {
         const { players } = this.props.history.location.state;
@@ -218,13 +232,70 @@ class Board extends Component {
     }
 
     validateInput = (e, inputType) => {
-        if (e.t)
-            this.setState({
-                [inputType]: e.target.value
-            })
+        const { selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops } = this.state;
+        const val = e.target.value;
+        if (isNaN(val)) {
+            console.log("invalid input");
+            return;
+        }
+        this.setState({
+            [inputType]: val
+        });
+        this.forceUpdate();
     }
 }
 
+const ActionButton = styled.button`
+    position: absolute;
+    right: 10px;
+    top: 238px;
+    background-color: white;
+    color: #1d65a8;
+    font-size: 90%;
+    border: none;
+    border-radius: 5px;
+    width: 88px;
+    height: 35px;
+    outline: none;
+    :hover {
+        background-color: #1d65a8;
+        color: white;
+    }
+    :focus {
+        outline: 0;
+    }
+`;
+
+const EndButton = styled.button`
+    position: absolute;
+    right: 10px;
+    top: 279px;
+    background-color: white;
+    color: #f44336;
+    font-size: 90%;
+    border: none;
+    border-radius: 5px;
+    width: 88px;
+    height: 35px;
+    outline: none;
+    :hover {
+        background-color: #f44336;
+        color: white;
+    }
+    :focus {
+        outline: 0;
+    }
+`;
+const AttackerTroopsInput = styled.input`
+    position: absolute;
+    right: 0px;
+    top: 165px;
+`;
+const DefenderTroopsInput = styled.input`
+    position: absolute;
+    right: 0px;
+    top: 200px;
+`;
 const MapContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -263,31 +334,31 @@ const InnerContainer = styled.div`
     padding-bottom: 18px;
 `;
 
-const StyledButton = styled(Button)`
-    width: 90%;
-    margin: 10% 0 0 0;
-    font-size: 90%;
-    font-weight: bold;
-    background-color: #1d65a8;
-    color: white;
+// const StyledButton = styled(Button)`
+//     width: 10%;
+//     margin: 10% 0 0 0;
+//     font-size: 90%;
+//     font-weight: bold;
+//     background-color: #1d65a8;
+//     color: white;
 
-    :hover {
-        box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.24);
-    }
+//     :hover {
+//         box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.24);
+//     }
 
-    :active {
-        transform: translateY(2px);
-    }
+//     :active {
+//         transform: translateY(2px);
+//     }
 
-    @media (${BREAKPOINTS.md}) {
-        width: 80%;
-    }
+//     @media (${BREAKPOINTS.md}) {
+//         width: 80%;
+//     }
 
-    @media (${BREAKPOINTS.sm}) {
-        font-size: 50%;
-        width: 100%;
-    }
-`;
+//     @media (${BREAKPOINTS.sm}) {
+//         font-size: 50%;
+//         width: 100%;
+//     }
+// `;
 
 const Title = styled.h4`
     font-size: 180%;
