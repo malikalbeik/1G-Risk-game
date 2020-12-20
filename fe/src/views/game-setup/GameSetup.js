@@ -39,7 +39,7 @@ class GameSetup extends Component {
         this.setState({ displayColorPickers: result });
     };
 
-    
+
 
     render() {
         const {
@@ -65,6 +65,7 @@ class GameSetup extends Component {
                                                 this.setState({ numOfPlayers: e.target.value })
                                             }
                                         >
+                                            <option value={2}>2</option>
                                             <option value={3}>3</option>
                                             <option value={4}>4 </option>
                                             <option value={5}>5</option>
@@ -100,11 +101,11 @@ class GameSetup extends Component {
                                                     </ColorContainer>
                                                     {this.state.displayColorPickers[index] ? <ColorPickerPopover>
                                                         <ColorPickerCover onClick={() => this.handleColorPickerClose(index)} />
-                                                        
+
                                                         <TwitterPicker
                                                             color="#36c"
                                                             triangle="top-left"
-                                                            colors= {COLORS}
+                                                            colors={COLORS}
                                                             onChange={color => {
                                                                 var players = this.state.players;
                                                                 players[index].color = color.hex;
@@ -137,7 +138,7 @@ class GameSetup extends Component {
             let players = [];
             for (let i = 0; i < val; i++) {
                 players.push({
-                    id: uuidv4(), playerTurnNumber: i, reservePersonel: 50 - (5 * val) 
+                    id: uuidv4(), playerTurnNumber: i, reservePersonel: 50 - (5 * val)
                 });
             }
             this.setState({ numOfPlayersRecorded: true, players });
