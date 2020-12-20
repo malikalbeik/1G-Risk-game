@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 import { TwitterPicker } from 'react-color';
+import RollDice from '../../animations/RollDice';
 import { BREAKPOINTS } from "../../config/gameConstants";
 import backgroundImage from "../../assets/background.jpg";
 import {
@@ -37,6 +38,8 @@ class GameSetup extends Component {
         result[index] = false;
         this.setState({ displayColorPickers: result });
     };
+
+    
 
     render() {
         const {
