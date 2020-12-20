@@ -173,7 +173,7 @@ class Board extends Component {
           ) : null}
           <TradeButton
             onClick={this.tradeCard}
-            disabled={currentPlayerSelectedCards.length !== 3}
+            disabled={currentPlayerSelectedCards.length < 3}
           >
             Trade
           </TradeButton>
@@ -386,18 +386,22 @@ class Board extends Component {
 
 
   tradeCard = () => {
+    console.log("trading");
     const { currentPlayerSelectedCards } = this.state;
     const currentPlayer = this.playerTurnDecider.getCurrentPlayerInfo();
-    if (currentPlayer.getNoOfCards() > 3) {
+    if (currentPlayer.getNoOfCards() >= 3) {
       this.cardsTrader.setNoOfPreviousTrades(
         currentPlayer.getNumOfCardTrades()
       );
       currentPlayer.setNumOfCardTrades(currentPlayer.getNumOfCardTrades() - 1);
+      let tempTroops = currentPlayer.getRemainingTroops();
       currentPlayer.setRemainingTroops(
         currentPlayer.getRemainingTroops() +
         this.cardsTrader.tradeCards(currentPlayerSelectedCards)
       );
-      currentPlayer.removeCards(currentPlayerSelectedCards);
+      if(currentPlayer.getRemainingTroops() > tempTroops){
+        currentPlayer.removeCards(currentPlayerSelectedCards);
+      }
       this.forceUpdate();
     }
     if (currentPlayer.getNoOfCards() < 5) {

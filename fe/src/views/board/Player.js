@@ -17,6 +17,7 @@ class Player {
         this.diceRoll = null;
         this.cards = [];
         this.numOfCardTrades = 0;
+        this.noOfCards = 0;
     }
 
     getId() {
@@ -95,6 +96,7 @@ class Player {
 
     addCard(card) {
         this.cards.push(card);
+        this.noOfCards++;
     }
 
     removeCards(cards) {
@@ -107,10 +109,10 @@ class Player {
                     this.cards.splice(i, 1);
                 }
                 if (
-                    cards[i].getCardType() === CARD_TYPES.TerritoryType.type &&
-                    cards[i].getInfantryType() ===
-                        this.cards[i].getInfantryType() &&
-                    cards[i].getTerritoryName() ===
+                    this.cards[i].getCardType() === CARD_TYPES.TerritoryType.type &&
+                    cards[j].getInfantaryType() ===
+                        this.cards[i].getInfantaryType() &&
+                    cards[j].getTerritoryName() ===
                         this.cards[i].getTerritoryName()
                 ) {
                     this.cards.splice(i, 1);

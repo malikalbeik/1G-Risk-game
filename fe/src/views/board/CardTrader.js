@@ -17,22 +17,25 @@ class CardTrader {
 
     tradeCards(cards) {
         if (this.checkIfTradeValid(cards)) {
+            console.log("trading");
             if (this.noOfPreviousTrades < NUMBER_OF_TRADES_SET) {
+                this.noOfPreviousTrades++;
                 this.noOfTroopsGivenInPreviousTrade =
                     2 * this.noOfPreviousTrades + 2;
-                this.noOfPreviousTrades++;
                 return this.noOfTroopsGivenInPreviousTrade;
             } else {
-                this.noOfTroopsGivenInPreviousTrade += 5;
                 this.noOfPreviousTrades++;
+                this.noOfTroopsGivenInPreviousTrade += 5;
                 return this.noOfTroopsGivenInPreviousTrade;
             }
         }
+        console.log("not trading");
         return 0;
     }
 
     checkIfTradeValid(cards) {
         if (this.checkIfCardsOfSameDesign(cards)) {
+            console.log("Same");
             return true;
         }
         if (this.checkIfCards1OfEachDesign(cards)) {
@@ -47,6 +50,7 @@ class CardTrader {
     checkIfCardsOfSameDesign(cards) {
         const [firstCard, secondCard, thirdCard] = cards;
         if (firstCard.getInfantaryType() === secondCard.getInfantaryType() && firstCard.getInfantaryType() === thirdCard.getInfantaryType()) {
+            console.log("Same");
             return true;
         }
         return false;
