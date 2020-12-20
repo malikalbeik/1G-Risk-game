@@ -69,12 +69,14 @@ class Board extends Component {
             numOfDefenderTroops,
             initialSetupPhase
         } = this.state;
-        console.log(this.state);
         return (
             <BoardContainer>
                 <InnerContainer>
                     {this.allPlayers.map((player) => player.getView())}
                 </InnerContainer>
+                <CardContainer>
+                    <StyledCardsIcon />
+                </CardContainer>
                 <MapContainer>
                     {this.map.getView()}
                     {selectedCountryId ? <span>{COUNTRIES[selectedCountryId].name} </span> : null}
@@ -245,6 +247,23 @@ class Board extends Component {
         this.forceUpdate();
     }
 }
+
+const CardContainer = styled.div`
+    position: absolute;
+    display: block;
+    left: 0px;
+    top: 250px;
+    width: fit-content;
+    height: fit-content;
+`;
+
+const StyledCardsIcon = styled.i`
+    display: block;
+    background-image: url(data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMyIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgNjQgNjQiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNjQgNjQiIHdpZHRoPSI1MTIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGc+PHBhdGggZD0ibTQ0IDYyaC00MGMtMS4xMDUgMC0yLS44OTUtMi0ydi01NmMwLTEuMTA1Ljg5NS0yIDItMmg0MGMxLjEwNSAwIDIgLjg5NSAyIDJ2NTZjMCAxLjEwNS0uODk1IDItMiAyeiIgZmlsbD0iIzRkNWQ3YSIvPjxwYXRoIGQ9Im00MCA1OGgtMzJjLTEuMTA1IDAtMi0uODk1LTItMnYtNDhjMC0xLjEwNS44OTUtMiAyLTJoMzJjMS4xMDUgMCAyIC44OTUgMiAydjQ4YzAgMS4xMDUtLjg5NSAyLTIgMnoiIGZpbGw9IiNlN2U0ZGQiLz48cGF0aCBkPSJtMTAgMTBoMjh2NDRoLTI4eiIgZmlsbD0iI2M2NmI2MCIvPjxnIGZpbGw9IiNlNDdjNmUiPjxwYXRoIGQ9Im0xMCAxOS41ODN2Mi44M2wxMi40MTMtMTIuNDEzaC0yLjgzeiIvPjxwYXRoIGQ9Im0xMCAzMC40MTMgMTEuNzA3LTExLjcwNi0xLjQxNS0xLjQxNS0xMC4yOTIgMTAuMjkyeiIvPjxwYXRoIGQ9Im0xMCAzNS41ODN2Mi44M2wyOC0yNy45OTl2LS40MTRoLTIuNDE2eiIvPjxwYXRoIGQ9Im0zOCAxNS41ODQtMjIuNzA5IDIyLjcwNyAxLjQxNSAxLjQxNSAyMS4yOTQtMjEuMjkzeiIvPjxwYXRoIGQ9Im0zOCAyMy41ODQtMjggMjcuOTk5djIuNDE3aC40MTNsMjcuNTg3LTI3LjU4NnoiLz48cGF0aCBkPSJtMTguNDEyIDU0IDE5LjU4OC0xOS41ODd2LTIuODI5bC0yMi40MTggMjIuNDE2eiIvPjxwYXRoIGQ9Im0yMy41ODMgNTRoMi44M2w5LjI5My05LjI5NC0xLjQxNS0xLjQxNXoiLz48cGF0aCBkPSJtMjguNTg0IDEwLTUuMjkzIDUuMjkyIDEuNDE1IDEuNDE1IDYuNzA3LTYuNzA3eiIvPjxwYXRoIGQ9Im0xMCA0Ni40MTMgNC43MDYtNC43MDctMS40MTUtMS40MTUtMy4yOTEgMy4yOTJ6Ii8+PC9nPjxwYXRoIGQ9Im00NiA1NGgxNGMxLjEwNSAwIDItLjg5NSAyLTJ2LTQwYzAtMS4xMDUtLjg5NS0yLTItMmgtMTQiIGZpbGw9IiMyNDMyNDIiLz48cGF0aCBkPSJtNDYgNTBoMTBjMS4xMDUgMCAyLS44OTUgMi0ydi0zMmMwLTEuMTA1LS44OTUtMi0yLTJoLTEwIiBmaWxsPSIjZTdlNGRkIi8+PHBhdGggZD0ibTQ2IDQ2aDh2LTI4aC04IiBmaWxsPSIjYzY2YjYwIi8+PHBhdGggZD0ibTQ2IDQ0LjQxMyA4LTh2LTIuODNsLTggOHoiIGZpbGw9IiNlNDdjNmUiLz48cGF0aCBkPSJtNDYgMjguNDE0IDgtOHYtMi40MTRoLS40MTZsLTcuNTg0IDcuNTg0eiIgZmlsbD0iI2U0N2M2ZSIvPjxwYXRoIGQ9Im00NiAzNS40MTMgOC03Ljk5OXYtMi44M2wtOCA3Ljk5OXoiIGZpbGw9IiNlNDdjNmUiLz48L2c+PC9zdmc+);
+    width: 30px;
+    height: 30px;
+    background-size: 30px 30px;
+`;
 
 const ActionButton = styled.button`
     position: absolute;

@@ -261,12 +261,18 @@ class Map {
         }
 
         if (departingCountry.getNumberOfTroops() <= numOfTroops) {
-            console.log("Departing country must have troops 1 greater than the number you want to move");
+            console.log("Departing country has less troops than you want to move.");
             return false;
         }
 
-        departingCountry.setNumberOfTroops(departingCountry.getNumberOfTroops() - numOfTroops);
-        destinationCountry.setNumberOfTroops(destinationCountry.getNumberOfTroops() + numOfTroops);
+        if (departingCountry.getNumberOfTroops() <= 1) {
+            console.log("Departing country has 1 toop only.");
+            return false;
+        }
+
+        departingCountry.setNumberOfTroops(parseInt(departingCountry.getNumberOfTroops() - numOfTroops));
+        destinationCountry.setNumberOfTroops(parseInt(destinationCountry.getNumberOfTroops() + numOfTroops));
+
         return true;
     }
 
