@@ -44,6 +44,7 @@ class Board extends Component {
       currentPlayerSelectedCards: [],
       ShowSavemodal: false,
       gameName: '',
+      cardsTrade: false,
     };
 
     if (this.props.history.location.state.savedGame) {
@@ -370,7 +371,7 @@ class Board extends Component {
     if (
       this.playerTurnDecider.getCurrentPlayerInfo().getRemainingTroops() === 0
     ) {
-      // this.map.resetCountryState();
+      this.setState({cardsTrade: false});
       this.forceUpdate();
       if (this.playerTurnDecider.getCurrentPlayerInfo().getCards().length > 5) {
         this.setState({ showCards: true });
@@ -393,16 +394,19 @@ class Board extends Component {
       this.cardsTrader.setNoOfPreviousTrades(
         currentPlayer.getNumOfCardTrades()
       );
-      currentPlayer.setNumOfCardTrades(currentPlayer.getNumOfCardTrades() - 1);
       let tempTroops = currentPlayer.getRemainingTroops();
       currentPlayer.setRemainingTroops(
         currentPlayer.getRemainingTroops() +
         this.cardsTrader.tradeCards(currentPlayerSelectedCards)
       );
       if(currentPlayer.getRemainingTroops() > tempTroops){
+        currentPlayer.setNumOfCardTrades(currentPlayer.getNumOfCardTrades() + 1);
         currentPlayer.removeCards(currentPlayerSelectedCards);
+        tempTroops = 0;
+        this.setState({cardsTrade:true});
+        this.forceUpdate();
       }
-      this.forceUpdate();
+      
     }
     if (currentPlayer.getNoOfCards() < 5) {
       this.setState({ showCards: true });
@@ -553,6 +557,15 @@ class Board extends Component {
 
     // Allow turn troops deployment
     if (turnsPhase && isCountryValid && !showCards) {
+      this.setState({ selectedCountryId: id }, () => {
+        this.map.setSelectedCountry(id);
+        this.deployTurnTroops();
+      });
+      this.forceUpdate();
+      return;
+    }
+
+    if(this.state.cardsTrade){
       this.setState({ selectedCountryId: id }, () => {
         this.map.setSelectedCountry(id);
         this.deployTurnTroops();

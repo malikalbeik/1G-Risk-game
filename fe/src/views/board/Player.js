@@ -119,6 +119,7 @@ class Player {
                 }
             }
         }
+        this.noOfCards -= 3;
     }
 
     getView() {
