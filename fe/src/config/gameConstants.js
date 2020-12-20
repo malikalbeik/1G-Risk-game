@@ -97,6 +97,8 @@ export const WILDCARDS = [
   },
 ];
 
+export const COLORS = ['#0000FF', '#000000', '#FFFF00', '#FF0000', '#009900', '#FF66B2'];
+
 export const CARDS = [
   { country: COUNTRIES.afghanistan.name, troop: TROOP_TYPES.Cavalry.name },
   { country: COUNTRIES.alaska.name, troop: TROOP_TYPES.Infantry.name },

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import './components/FontAwesomeIcons'
 import styled from "styled-components";
 import backgroundImage from "../assets/background.jpg";
 import { Container, Button } from "reactstrap";
