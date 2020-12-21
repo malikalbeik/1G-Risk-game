@@ -3,6 +3,9 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import './Die.css'
 
 class Die extends Component{ 
+	static defaultProps = {
+		face: 'one',
+	}
 render(){ 
 	const {face, rolling} = this.props 
 

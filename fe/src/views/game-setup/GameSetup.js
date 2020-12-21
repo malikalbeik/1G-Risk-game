@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 import { TwitterPicker } from 'react-color';
-
+import DiceApp from '../../animations/DiceApp'
 import { BREAKPOINTS, COLORS } from "../../config/gameConstants";
 import backgroundImage from "../../assets/background.jpg";
 import {
@@ -14,7 +14,7 @@ class GameSetup extends Component {
         super(props);
 
         this.state = {
-            numOfPlayers: 3,
+            numOfPlayers: 2,
             numOfPlayersRecorded: false,
             players: [],
             displayColorPickers: [],
