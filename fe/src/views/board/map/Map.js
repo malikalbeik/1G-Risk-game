@@ -205,7 +205,7 @@ class Map {
         }
 
         if (!this.isAttackStateValid(attackingCountry, defendingCountry, numOfTroopsToAttackWith, numOfTroopsToDefendWith)) {
-             return false;
+            return false;
         }
 
         const [attackingPlayer, defendingPlayer] = this.getAttackingAndDefendingPlayer(attackingCountry, defendingCountry);
