@@ -66,7 +66,9 @@ class Board extends Component {
             (country) => country.value
         );
         this.playerTurnDecider = new PlayerTurnDecider(this.allPlayers);
-        this.allPlayers[0].setIsPlayerTurn(true);
+        if (!this.props.history.location.state.savedGame) {
+            this.allPlayers[0].setIsPlayerTurn(true);
+        }
         this.troopsGiver = new TroopsGiver(
             this.map.getCountries(),
             this.map.getContinents()
