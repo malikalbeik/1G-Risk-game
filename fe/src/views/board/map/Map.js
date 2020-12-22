@@ -194,16 +194,15 @@ class Map {
         const result = this.countryIdsToNames(attackingCountryId, defendingCountryId);
         let attackingCountry, defendingCountry = null;
         if (result) {
-            attackingCountry = result[0];
-            defendingCountry = result[1];
+            defendingCountry = result[0];
+            attackingCountry = result[1];
         } else {
             return false;
         }
-
         if (attackingCountry.getOccupyingPlayerId() === defendingCountry.getOccupyingPlayerId()) {
             return this.maneuverTroops(attackingCountryId, defendingCountryId, numOfTroopsToAttackWith);
         }
-
+        
         if (!this.isAttackStateValid(attackingCountry, defendingCountry, numOfTroopsToAttackWith, numOfTroopsToDefendWith)) {
             return false;
         }
