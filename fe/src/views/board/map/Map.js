@@ -68,12 +68,24 @@ class Map {
     deployTroop(selectedCountryId, player, numberOfTroops) {
         let troopDeployed = false;
         for (let i = 0; i < this.continents.length; i++) {
-            if (this.continents[i].deployTroopsToCountry(selectedCountryId, player, numberOfTroops)) {
+            if (this.continents[i].deployTroopsToCountry(selectedCountryId, player, numberOfTroops, this.allCountriesHaveOneTroop.bind(this))) {
                 troopDeployed = true;
                 break;
             };
         }
         return troopDeployed;
+    }
+
+    allCountriesHaveOneTroop() {
+        let isGood;
+        for (let i = 0; i < this.countries.length; i++) {
+            if (this.countries[i].getNumberOfTroops() === 1) {
+                isGood = true;
+            } else {
+                isGood = false;
+            }
+        }
+        return isGood;
     }
 
     doPlayersHaveTroops() {
