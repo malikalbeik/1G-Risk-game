@@ -380,17 +380,20 @@ class Board extends Component {
     }
 
     attackInputFieldsRenderer = () => {
-        const { numOfAttackerTroops, numOfDefenderTroops, attackState } = this.state;
-        return (
-            <>
-                <AttackerTroopsInput value={numOfAttackerTroops} onChange={(e) => this.validateInput(e, "numOfAttackerTroops")}
-                    style={{ zIndex: attackState ? "1000" : "-1" }}
-                />
-                <DefenderTroopsInput value={numOfDefenderTroops} onChange={(e) => this.validateInput(e, "numOfDefenderTroops") }
-                    style={{ zIndex: attackState ? "1000" : "-1" }}
-                />
-            </>
-        );
+        const { numOfAttackerTroops, numOfDefenderTroops, attackState, selectedCountryId } = this.state;
+        
+        if (selectedCountryId && attackState) 
+            return (
+                <>
+                    <AttackerTroopsInput value={numOfAttackerTroops} onChange={(e) => this.validateInput(e, "numOfAttackerTroops")}
+                        style={{ zIndex: attackState ? "1000" : "-1" }}
+                    />
+                    <DefenderTroopsInput value={numOfDefenderTroops} onChange={(e) => this.validateInput(e, "numOfDefenderTroops") }
+                        style={{ zIndex: attackState ? "1000" : "-1" }}
+                    />
+                </>
+            );
+        return null;
     }
 
     saveGameButtonsRenderer = () => {
