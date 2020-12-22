@@ -55,8 +55,9 @@ class Continent {
                 const isOccupiedBySamePlayer = this.countries[i].getOccupyingPlayerId() === player.id;
                 const playerHasTroopsToDeploy = player.getRemainingTroops() > 0;
                 const allCountriesHave1Troop = allCountriesHaveOneTroop();
+                console.log(playerHasTroopsToDeploy && isUnoccupied);
+                console.log(allCountriesHave1Troop && isOccupiedBySamePlayer);
                 if ((playerHasTroopsToDeploy && isUnoccupied) || (allCountriesHave1Troop && isOccupiedBySamePlayer)) {
-                    console.log("here1");
                     this.countries[i].setOccupyingPlayer(player);
                     this.countries[i].setNumberOfTroops(this.countries[i].getNumberOfTroops() + numberOfTroops);
                     player.setRemainingTroops(player.getRemainingTroops() - 1);

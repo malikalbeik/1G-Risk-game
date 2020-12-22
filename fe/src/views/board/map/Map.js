@@ -83,6 +83,7 @@ class Map {
                 isGood = true;
             } else {
                 isGood = false;
+                break;
             }
         }
         return isGood;
