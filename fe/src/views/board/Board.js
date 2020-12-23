@@ -386,7 +386,7 @@ class Board extends Component {
     attackInputFieldsRenderer = () => {
         const { numOfAttackerTroops, numOfDefenderTroops, attackState, selectedCountryId } = this.state;
         
-        if (selectedCountryId && attackState) 
+        if (attackState) 
             return (
                 <>
                     <AttackerTroopsInput value={numOfAttackerTroops} onChange={(e) => this.validateInput(e, "numOfAttackerTroops")}
