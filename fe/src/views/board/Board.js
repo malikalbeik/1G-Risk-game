@@ -122,6 +122,7 @@ class Board extends Component {
                     {this.endTurnButtonRenderer()}
                 </MapContainer>
                 {this.saveGameButtonsRenderer()}
+                {attackerDiceRolls && defenderDiceRolls ? 
                 <DiceRollsContainer>
                     <AttackerDiceRollsContainer>
                         Attacker's Rolls<br/>
@@ -135,7 +136,7 @@ class Board extends Component {
                             {defenderDiceRolls && <span>{defenderDiceRolls.join(" | ")}</span>}
                         </span>
                     </DefenderDiceRollsContainer>
-                </DiceRollsContainer>
+                </DiceRollsContainer>: null}
             </BoardContainer>
         );
     }
