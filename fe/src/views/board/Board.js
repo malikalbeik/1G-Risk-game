@@ -102,7 +102,7 @@ class Board extends Component {
         const { selectedCountryId, showCards, currentPlayerSelectedCards, attackerDiceRolls, defenderDiceRolls } = this.state;
         if (!this.allPlayers) return null;
         const playerCards = this.playerTurnDecider.getCurrentPlayerInfo().getCards() || [];
-        
+
         return (
             <BoardContainer>
                 <CardSlidingPane
@@ -126,21 +126,21 @@ class Board extends Component {
                     {this.endTurnButtonRenderer()}
                 </MapContainer>
                 {this.saveGameButtonsRenderer()}
-                {attackerDiceRolls && defenderDiceRolls ? 
-                <DiceRollsContainer>
-                    <AttackerDiceRollsContainer>
-                        Attacker's Rolls<br/>
-                        <span>
-                            {attackerDiceRolls && <span>{attackerDiceRolls.join(" | ")}</span>}
-                        </span>
-                    </AttackerDiceRollsContainer>
-                    <DefenderDiceRollsContainer>
-                        Defender's Rolls<br/>
-                        <span>
-                            {defenderDiceRolls && <span>{defenderDiceRolls.join(" | ")}</span>}
-                        </span>
-                    </DefenderDiceRollsContainer>
-                </DiceRollsContainer>: null}
+                {attackerDiceRolls && defenderDiceRolls ?
+                    <DiceRollsContainer>
+                        <AttackerDiceRollsContainer>
+                            Attacker's Rolls<br />
+                            <span>
+                                {attackerDiceRolls && <span>{attackerDiceRolls.join(" | ")}</span>}
+                            </span>
+                        </AttackerDiceRollsContainer>
+                        <DefenderDiceRollsContainer>
+                            Defender's Rolls<br />
+                            <span>
+                                {defenderDiceRolls && <span>{defenderDiceRolls.join(" | ")}</span>}
+                            </span>
+                        </DefenderDiceRollsContainer>
+                    </DiceRollsContainer> : null}
             </BoardContainer>
         );
     }
@@ -396,13 +396,8 @@ class Board extends Component {
                         }
                     />
                     <ActionButton onClick={() => {
-<<<<<<< HEAD
-                            this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops, alert);
-                        }}
-=======
-                        this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops);
+                        this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops, alert);
                     }}
->>>>>>> cc3b640 (fix: fixed saved games cards system)
                     >Maneuver</ActionButton>
                 </>
             );
@@ -421,15 +416,9 @@ class Board extends Component {
     }
 
     attackInputFieldsRenderer = () => {
-<<<<<<< HEAD
         const { numOfAttackerTroops, numOfDefenderTroops, attackState, cardsTrade } = this.state;
-        
-        if (!cardsTrade && attackState) 
-=======
-        const { numOfAttackerTroops, numOfDefenderTroops, attackState, selectedCountryId } = this.state;
 
-        if (selectedCountryId && attackState)
->>>>>>> cc3b640 (fix: fixed saved games cards system)
+        if (!cardsTrade && attackState)
             return (
                 <>
                     <AttackerTroopsInput value={numOfAttackerTroops} onChange={(e) => this.validateInput(e, "numOfAttackerTroops")}
