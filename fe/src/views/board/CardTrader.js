@@ -29,13 +29,11 @@ class CardTrader {
                 return this.noOfTroopsGivenInPreviousTrade;
             }
         }
-        console.log("not trading");
         return 0;
     }
 
     checkIfTradeValid(cards) {
         if (this.checkIfCardsOfSameDesign(cards)) {
-            console.log("Same");
             return true;
         }
         if (this.checkIfCards1OfEachDesign(cards)) {
@@ -50,7 +48,6 @@ class CardTrader {
     checkIfCardsOfSameDesign(cards) {
         const [firstCard, secondCard, thirdCard] = cards;
         if (firstCard.getInfantaryType() === secondCard.getInfantaryType() && firstCard.getInfantaryType() === thirdCard.getInfantaryType()) {
-            console.log("Same");
             return true;
         }
         return false;

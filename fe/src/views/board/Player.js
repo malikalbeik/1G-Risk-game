@@ -100,6 +100,7 @@ class Player {
     }
 
     removeCards(cards) {
+        redoLoop:
         for (let i = 0; i < this.cards.length; i++) {
             for (let j = 0; j < cards.length; j++) {
                 if (
@@ -107,6 +108,8 @@ class Player {
                     cards[j].getCardType() === CARD_TYPES.WildType.type
                 ) {
                     this.cards.splice(i, 1);
+                    i = -1;
+                    continue redoLoop;
                 }
                 if (
                     this.cards[i].getCardType() === CARD_TYPES.TerritoryType.type &&
@@ -116,6 +119,8 @@ class Player {
                         this.cards[i].getTerritoryName()
                 ) {
                     this.cards.splice(i, 1);
+                    i = -1;
+                    continue redoLoop;
                 }
             }
         }

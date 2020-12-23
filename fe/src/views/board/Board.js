@@ -180,10 +180,13 @@ class Board extends Component {
                 JSON.stringify(currentPlayerSelectedCards[i]) ===
                 JSON.stringify(card)
             ) {
+                currentPlayerSelectedCards.splice(i,1);
                 return false;
             }
         }
-        currentPlayerSelectedCards.push(card);
+        if(currentPlayerSelectedCards.length < 3){
+            currentPlayerSelectedCards.push(card);
+        }
         this.setState({ currentPlayerSelectedCards: currentPlayerSelectedCards });
     };
 
@@ -205,12 +208,10 @@ class Board extends Component {
                 );
                 currentPlayer.removeCards(currentPlayerSelectedCards);
                 tempTroops = 0;
-                this.setState({ cardsTrade: true });
+            
+                this.setState({ cardsTrade: true, currentPlayerSelectedCards:[]});
                 this.forceUpdate();
             }
-        }
-        if (currentPlayer.getNoOfCards() < 5) {
-            this.setState({ showCards: true });
         }
     };
 
