@@ -343,7 +343,11 @@ class Board extends Component {
 
         const remainingPlayerTroops =  this.playerTurnDecider.getCurrentPlayerInfo().getRemainingTroops();
         if (!initialSetupPhase && remainingPlayerTroops === 0) {
-            return <EndButton onClick={() => this.endTurnForPlayer(true)}>End Turn</EndButton>;
+            return <EndButton onClick={() => {
+                this.endTurnForPlayer(true)
+                this.setState({ selectedCountryId: "" });
+                this.map.resetCountryState();
+            }}>End Turn</EndButton>;
         }
         return null;
     }
