@@ -274,9 +274,9 @@ class Board extends Component {
                     this.map.setSelectedCountry(id);
                     this.forceUpdate();
                 } else {
-                    // this.setState({ selectedCountryId: "" });
-                    // this.map.resetCountryState();
-                    // this.forceUpdate();
+                    this.setState({ selectedCountryId: "" });
+                    this.map.resetCountryState();
+                    this.forceUpdate();
                 }
             }
             this.prevent = false;
