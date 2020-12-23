@@ -28,6 +28,7 @@ const options = {
 };
 
 class Router extends Component {
+    game = new Game();
     constructor(props) {
         super(props);
 
@@ -81,8 +82,8 @@ class Router extends Component {
                         <Route path="/login" exact component={Login} />
                         <Route path="/signup" exact component={SignUp} />
                         <Route path="/setup" exact component={GameSetup} />
-                        {/* <Route path="/board" exact component={new Game().getInstance()} /> */}
-                        <Route path="/board" exact component={Board} />
+                        <Route path="/board" exact component={this.game.getInstance()} />
+                        {/* <Route path="/board" exact component={Board} /> */}
                         <Route path="/how" exact component={How} />
                         <Route path="/about" exact component={About} />
                         <Route path="/load" exact component={LoadGame} />
