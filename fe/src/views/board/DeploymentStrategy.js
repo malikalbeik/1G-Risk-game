@@ -8,7 +8,7 @@ class DeploymentStrategy {
 // Strategy 1: Initial Troops Deployment When Game Starts
 export class InitialDeployment extends DeploymentStrategy {
     deploy(map, playerTurnDecider, selectedCountryId, troopsGiver, cardsDeck, alert, callback) {
-        if (map.deployTroop(selectedCountryId, playerTurnDecider.getPlayerWithTurn(), 1)) {
+        if (map.deployTroop(selectedCountryId, playerTurnDecider.getPlayerWithTurn(), 1, true)) {
             playerTurnDecider.endTurnForPlayer(false);
             if (!map.doPlayersHaveTroops()) {
                 const currentPlayer = playerTurnDecider.getPlayerWithTurn();
@@ -28,7 +28,7 @@ export class InitialDeployment extends DeploymentStrategy {
 // Strategy 2: Troops Deployment When Player Turn Starts
 export class TurnsDeployment extends DeploymentStrategy {
     deploy(map, playerTurnDecider, selectedCountryId, troopsGiver, cardsDeck, alert, callback) {
-        const deploymentResult = map.deployTroop(selectedCountryId, playerTurnDecider.getPlayerWithTurn(), 1);
+        const deploymentResult = map.deployTroop(selectedCountryId, playerTurnDecider.getPlayerWithTurn(), 1, true);
         if (playerTurnDecider.getCurrentPlayerInfo().getRemainingTroops() === 0) {
             callback({ cardsTrade: false });
             if (playerTurnDecider.getCurrentPlayerInfo().getCards().length > 5) {
