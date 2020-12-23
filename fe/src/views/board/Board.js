@@ -164,6 +164,7 @@ class Board extends Component {
                     alert.error("No cards left to give.");
                 }
             } else {
+                this.setState({ attackerDiceRolls: result.attackerDiceRolls, defenderDiceRolls: result.defenderDiceRolls });
                 alert.show(this.playerTurnDecider.getCurrentPlayerInfo().getName() + " lost.");
             }
         }

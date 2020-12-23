@@ -216,9 +216,9 @@ class Map {
             return this.maneuverTroops(attackingCountryId, defendingCountryId, numOfTroopsToAttackWith, alert);
         }
         
-        // if (!this.isAttackStateValid(attackingCountry, defendingCountry, numOfTroopsToAttackWith, numOfTroopsToDefendWith, alert)) {
-        //     return false;
-        // }
+        if (!this.isAttackStateValid(attackingCountry, defendingCountry, numOfTroopsToAttackWith, numOfTroopsToDefendWith, alert)) {
+            return false;
+        }
 
         const [attackingPlayer, defendingPlayer] = this.getAttackingAndDefendingPlayer(attackingCountry, defendingCountry);
 
