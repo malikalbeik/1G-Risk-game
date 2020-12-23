@@ -65,10 +65,10 @@ class Map {
         return [attackingCountry, defendingCountry];
     }
 
-    deployTroop(selectedCountryId, player, numberOfTroops) {
+    deployTroop(selectedCountryId, player, numberOfTroops, initialDeployment) {
         let troopDeployed = false;
         for (let i = 0; i < this.continents.length; i++) {
-            if (this.continents[i].deployTroopsToCountry(selectedCountryId, player, numberOfTroops, this.allCountriesHaveOneTroop.bind(this))) {
+            if (this.continents[i].deployTroopsToCountry(selectedCountryId, player, numberOfTroops, this.allCountriesHaveOneTroop.bind(this), initialDeployment)) {
                 troopDeployed = true;
                 break;
             };
@@ -79,7 +79,7 @@ class Map {
     allCountriesHaveOneTroop() {
         let isGood;
         for (let i = 0; i < this.countries.length; i++) {
-            if (this.countries[i].getNumberOfTroops() === 1) {
+            if (this.countries[i].getNumberOfTroops() >= 1) {
                 isGood = true;
             } else {
                 isGood = false;

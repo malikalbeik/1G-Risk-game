@@ -100,26 +100,22 @@ class Player {
     }
 
     removeCards(cards) {
-        for (let i = 0; i < this.cards.length; i++) {
-            for (let j = 0; j < cards.length; j++) {
-                if (
-                    this.cards[i].getCardType() === CARD_TYPES.WildType.type &&
-                    cards[j].getCardType() === CARD_TYPES.WildType.type
-                ) {
-                    this.cards.splice(i, 1);
-                }
-                if (
-                    this.cards[i].getCardType() === CARD_TYPES.TerritoryType.type &&
-                    cards[j].getInfantaryType() ===
-                        this.cards[i].getInfantaryType() &&
-                    cards[j].getTerritoryName() ===
-                        this.cards[i].getTerritoryName()
-                ) {
-                    this.cards.splice(i, 1);
-                }
-            }
-        }
-        this.noOfCards -= 3;
+        let updatedWildPlayerCards = this.cards.filter(function(objFromA) {
+            return !cards.find(function(objFromB) {
+            return (objFromA.getCardType() === CARD_TYPES.WildType.type && objFromB.getCardType() === CARD_TYPES.WildType.type)
+            })
+        })
+
+        let updatedTerritoryPlayerCards = this.cards.filter(function(objFromA) {
+            return !cards.find(function(objFromB) {
+                return (
+                    objFromA.getCardType() === CARD_TYPES.TerritoryType.type &&
+                    objFromB.getInfantaryType() === objFromA.getInfantaryType() &&
+                    objFromB.getTerritoryName() === objFromA.getTerritoryName()
+                )
+            })
+        });
+        // this.noOfCards -= 3;
     }
 
     getView() {

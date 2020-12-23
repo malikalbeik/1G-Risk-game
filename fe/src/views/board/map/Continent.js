@@ -48,19 +48,17 @@ class Continent {
         return this.continentName;
     }
 
-    deployTroopsToCountry(selectedCountryId, player, numberOfTroops, allCountriesHaveOneTroop) {
+    deployTroopsToCountry(selectedCountryId, player, numberOfTroops, allCountriesHaveOneTroop, initialDeployment) {
         for (let i = 0; i < this.countries.length; i++) {
             if (this.countries[i].getId() === selectedCountryId) {
                 const isUnoccupied = this.countries[i].getOccupyingPlayerId().length === 0;
                 const isOccupiedBySamePlayer = this.countries[i].getOccupyingPlayerId() === player.id;
                 const playerHasTroopsToDeploy = player.getRemainingTroops() > 0;
                 const allCountriesHave1Troop = allCountriesHaveOneTroop();
-                console.log(playerHasTroopsToDeploy && isUnoccupied);
-                console.log(allCountriesHave1Troop && isOccupiedBySamePlayer);
-                if ((playerHasTroopsToDeploy && isUnoccupied) || (allCountriesHave1Troop && isOccupiedBySamePlayer)) {
+                if ((playerHasTroopsToDeploy && isUnoccupied) || (allCountriesHave1Troop && isOccupiedBySamePlayer) || (!initialDeployment && player.getRemainingTroops() !== 0)) {
                     this.countries[i].setOccupyingPlayer(player);
                     this.countries[i].setNumberOfTroops(this.countries[i].getNumberOfTroops() + numberOfTroops);
-                    player.setRemainingTroops(player.getRemainingTroops() - 1);
+                    player.setRemainingTroops(player.getRemainingTroops() - numberOfTroops);
                     return true;
                 } 
                 return false;
