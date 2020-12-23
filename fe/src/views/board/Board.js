@@ -96,7 +96,6 @@ class Board extends Component {
 
     render() {
         const { selectedCountryId, showCards, currentPlayerSelectedCards } = this.state;
-
         if (!this.allPlayers) return null;
 
         const playerCards = this.playerTurnDecider.getCurrentPlayerInfo().getCards() || [];
@@ -275,9 +274,9 @@ class Board extends Component {
                     this.map.setSelectedCountry(id);
                     this.forceUpdate();
                 } else {
-                    this.setState({ selectedCountryId: "" });
-                    this.map.resetCountryState();
-                    this.forceUpdate();
+                    // this.setState({ selectedCountryId: "" });
+                    // this.map.resetCountryState();
+                    // this.forceUpdate();
                 }
             }
             this.prevent = false;
@@ -344,7 +343,11 @@ class Board extends Component {
 
         const remainingPlayerTroops =  this.playerTurnDecider.getCurrentPlayerInfo().getRemainingTroops();
         if (!initialSetupPhase && remainingPlayerTroops === 0) {
-            return <EndButton onClick={() => this.endTurnForPlayer(true)}>End Turn</EndButton>;
+            return <EndButton onClick={() => {
+                this.endTurnForPlayer(true)
+                this.setState({ selectedCountryId: "" });
+                this.map.resetCountryState();
+            }}>End Turn</EndButton>;
         }
         return null;
     }
