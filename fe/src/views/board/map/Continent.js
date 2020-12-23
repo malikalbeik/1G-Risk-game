@@ -48,22 +48,36 @@ class Continent {
         return this.continentName;
     }
 
-    deployTroopsToCountry(selectedCountryId, player, numberOfTroops, allCountriesHaveOneTroop, initialDeployment) {
+    deployTroopsToCountry(selectedCountryId, player, numberOfTroops) {
         for (let i = 0; i < this.countries.length; i++) {
             if (this.countries[i].getId() === selectedCountryId) {
-                const isUnoccupied = this.countries[i].getOccupyingPlayerId().length === 0;
-                const isOccupiedBySamePlayer = this.countries[i].getOccupyingPlayerId() === player.id;
-                const playerHasTroopsToDeploy = player.getRemainingTroops() > 0;
-                const allCountriesHave1Troop = allCountriesHaveOneTroop();
-                if ((playerHasTroopsToDeploy && isUnoccupied) || (allCountriesHave1Troop && isOccupiedBySamePlayer) || (!initialDeployment && player.getRemainingTroops() !== 0)) {
+                if (
+                    (this.countries[i].getOccupyingPlayerId().length === 0 || // unoccupied
+                        (this.countries[i].getOccupyingPlayerId() === player.id && // occupied by same player
+                            this.allCountriesHaveOneTroop())) &&
+                    player.getRemainingTroops() > 0
+                ) {
                     this.countries[i].setOccupyingPlayer(player);
-                    this.countries[i].setNumberOfTroops(this.countries[i].getNumberOfTroops() + numberOfTroops);
-                    player.setRemainingTroops(player.getRemainingTroops() - numberOfTroops);
+                    this.countries[i].setNumberOfTroops(
+                        this.countries[i].getNumberOfTroops() + numberOfTroops
+                    );
+                    player.setRemainingTroops(player.getRemainingTroops() - 1);
                     return true;
-                } 
-                return false;
+                } else {
+                    return false;
+                }
             }
         }
+    }
+
+    allCountriesHaveOneTroop() {
+        let isGood = true;
+        for (let i = 0; i < this.countries.length; i++) {
+            if (this.countries[i].getNumberOfTroops() === 0) {
+                isGood = false;
+            }
+        }
+        return isGood;
     }
 
     getPlayerWhoOccupiesWholeContient() {

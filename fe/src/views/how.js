@@ -20,8 +20,6 @@ class How extends Component {
                             and then click Attack. </p>
                         <p>* To maneuver troops to another country, single click on your country and double click on the country you want to move troops to. 
                             One input field will appear, enter number of troops to maneuver leaving at least one behind. Then click Maneuver. </p>
-                        <p>* For trading cardes, go to the slide panel and choose three cards (3 cards with same troop, 3  different cards, 3 wild cards) and press trade, 
-                          to know if you have selected the cards, after three cards being selected the trade button will be enabled. </p>
                         <p>* After you are done, click end turn, to end your turn and that the next player can start playing. </p>
                     </InnerContainer>
                 </CenteredContainer>

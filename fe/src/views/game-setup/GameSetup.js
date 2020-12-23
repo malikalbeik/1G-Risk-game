@@ -2,20 +2,19 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 import { TwitterPicker } from 'react-color';
-import { Container, Button, Row, Col, FormGroup, Input, Label } from "reactstrap";
-import ReactDice from 'react-dice-complete';
-import 'react-dice-complete/dist/react-dice-complete.css';
-import { withAlert } from "react-alert";
 
 import { BREAKPOINTS, COLORS } from "../../config/gameConstants";
 import backgroundImage from "../../assets/background.jpg";
+import {
+    Container, Button, Row, Col, FormGroup, Input, Label
+} from "reactstrap";
 
 class GameSetup extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            numOfPlayers: 2,
+            numOfPlayers: 3,
             numOfPlayersRecorded: false,
             players: [],
             displayColorPickers: [],
@@ -87,7 +86,11 @@ class GameSetup extends Component {
                                                     <Input
                                                         placeholder={"Player " + (index + 1) + "'s Name"}
                                                         value={this.state.players[index]["player" + index + "Name"]}
-                                                        onChange={(e) => this.inputOnChangeHandler(e, index)}
+                                                        onChange={(e) => {
+                                                            var players = this.state.players;
+                                                            players[index].name = e.target.value;
+                                                            this.setState({ players });
+                                                        }}
                                                     />
                                                 </FormGroup>
                                             </Col>
@@ -117,54 +120,14 @@ class GameSetup extends Component {
                                     </div>
                                 );
                             })}
-                        {numOfPlayersRecorded && players.length > 0 ? <DiceContainer>
-                            {players.map((player, index) => {
-                                const playerIndex = index;
-                                return <div key={player.id}>
-                                    <ReactDice 
-                                        numDice={1}
-                                        rollDone={(num) => this.rollDoneCallback(num, playerIndex)}
-                                        faceColor="#000"
-                                        dotColor="fff"
-                                        rollTime={1}
-                                    />
-                                </div>
-                            })}
-                        </DiceContainer> : null}
                         {numOfPlayersRecorded ? <StyledButton onClick={e => {
                             e.preventDefault();
-                            if (this.validateGameStartState()) {
-                                players.sort((a, b) => (a.roll < b.roll) ? 1 : -1);
-                                players.map((_, index) => {
-                                    players[index].turnNumber = index;
-                                })
-                                this.props.alert.success("Players sorted by dice rolls");
-                                this.props.history.push('/board', { ...this.state, initialDeployment: true });
-                            }
+                            this.props.history.push('/board', { ...this.state, initialDeployment: true });
                         }}>Start Game</StyledButton> : null}
                     </InnerContainer>
                 </CenteredContainer>
             </BackgroundContainer>
         );
-    }
-
-    validatePlayerInfo = () => {
-        const { players } = this.state;
-        for (let i = 0; i < players.length; i++) {
-            if (!players[i].name || !players[i].color) {
-                this.setState({ playersValid: true });
-                return false;
-            }
-        }
-        this.setState({ playersValid: false });
-        return true;
-    }
-
-    rollDoneCallback = (num, playerIndex) => {
-        const { players } = this.state;
-        if (players && players.length > 0) {
-            players[playerIndex]["roll"] = num;
-        }
     }
 
     validateInput = () => {
@@ -175,30 +138,12 @@ class GameSetup extends Component {
             let players = [];
             for (let i = 0; i < val; i++) {
                 players.push({
-                    id: uuidv4(), turnNumber: i, reservePersonel: 50 - (5 * val)
+                    id: uuidv4(), playerTurnNumber: i, reservePersonel: 50 - (5 * val)
                 });
             }
             this.setState({ numOfPlayersRecorded: true, players });
         }
     };
-
-    inputOnChangeHandler = (e, index) => {
-        var players = this.state.players;
-        players[index].name = e.target.value;
-        this.setState({ players });
-    }
-
-    validateGameStartState = () => {
-        const { alert } = this.props;
-        const { players } = this.state;
-        for (let i = 0; i < players.length; i++) {
-            if (!players[i].color || !players[i].name) {
-                alert.error("Player " + (i + 1) + " fields invalid.");
-                return false;
-            }
-        }
-        return true;
-    }
 }
 
 
@@ -234,10 +179,6 @@ const InnerContainer = styled(Container)`
   @media (${BREAKPOINTS.sm}) {
     width: 80%;
   }
-`;
-
-const DiceContainer = styled.div`
-  display: flex;
 `;
 
 const Title = styled.h2`
@@ -296,4 +237,4 @@ const ColorPickerCover = styled.div`
     left: 0px;
 `;
 
-export default withAlert()(GameSetup);
+export default GameSetup;

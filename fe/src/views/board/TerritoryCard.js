@@ -5,14 +5,9 @@ import Card from "./Card";
 import { BREAKPOINTS } from "../../config/gameConstants";
 
 class TerritoryCard extends Card {
-  constructor(territoryName, infantaryName, savedGame = null) {
-    if (savedGame) {
-      super(savedGame.territoryName, savedGame.infantaryType);
-      this.cardType = savedGame.cardType;
-    } else {
-      super(territoryName, infantaryName);
-      this.cardType = CARD_TYPES.TerritoryType.type;
-    }
+  constructor(territoryName, infantaryName) {
+    super(territoryName, infantaryName);
+    this.cardType = CARD_TYPES.TerritoryType.type;
   }
 
   getCardType() {
@@ -28,14 +23,6 @@ class TerritoryCard extends Card {
     });
 
     return React.createElement(CardBorder, { children: Country, Troop });
-  }
-
-  getAsJson() {
-    var result = {};
-    result.territoryName = this.territoryName;
-    result.infantaryType = this.infantaryType;
-    result.cardType = this.cardType;
-    return result;
   }
 }
 

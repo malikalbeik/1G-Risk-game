@@ -1,10 +1,7 @@
 class PlayerTurnDecider {
-    constructor(players, isGameSaved) {
+    constructor(players) {
         this.players = players;
         this.indexOfPlayerWithTurn = 0;
-        if (isGameSaved) {
-            this.indexOfPlayerWithTurn = this.players.findIndex(player => player.isPlayerTurn == true);
-        }
     }
 
     getPlayerWithTurn() {
@@ -13,7 +10,6 @@ class PlayerTurnDecider {
     }
 
     endTurnForPlayer(shouldValidatePlayerTroops) {
-        console.log("whyy", shouldValidatePlayerTroops)
         if (shouldValidatePlayerTroops && this.players[this.indexOfPlayerWithTurn].getRemainingTroops() !== 0) {
             return false;
         }

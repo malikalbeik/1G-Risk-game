@@ -7,17 +7,16 @@ import {
 } from "../../config/gameConstants";
 
 class Player {
-    constructor(name, id, remainingTroops, color, isPlayerTurn, turnNumber, diceRoll = null, noOfCards = 0, numOfCardTrades = 0) {
+    constructor(name, id, remainingTroops, color, isPlayerTurn, turnNumber) {
         this.name = name;
         this.id = id;
         this.remainingTroops = remainingTroops;
         this.color = color;
         this.isPlayerTurn = isPlayerTurn;
         this.turnNumber = turnNumber;
-        this.diceRoll = diceRoll;
+        this.diceRoll = null;
         this.cards = [];
-        this.numOfCardTrades = numOfCardTrades;
-        this.noOfCards = noOfCards;
+        this.numOfCardTrades = 0;
     }
 
     getId() {
@@ -96,11 +95,9 @@ class Player {
 
     addCard(card) {
         this.cards.push(card);
-        this.noOfCards++;
     }
 
     removeCards(cards) {
-        redoLoop:
         for (let i = 0; i < this.cards.length; i++) {
             for (let j = 0; j < cards.length; j++) {
                 if (
@@ -108,23 +105,18 @@ class Player {
                     cards[j].getCardType() === CARD_TYPES.WildType.type
                 ) {
                     this.cards.splice(i, 1);
-                    i = -1;
-                    continue redoLoop;
                 }
                 if (
-                    this.cards[i].getCardType() === CARD_TYPES.TerritoryType.type &&
-                    cards[j].getInfantaryType() ===
-                    this.cards[i].getInfantaryType() &&
-                    cards[j].getTerritoryName() ===
-                    this.cards[i].getTerritoryName()
+                    cards[i].getCardType() === CARD_TYPES.TerritoryType.type &&
+                    cards[i].getInfantryType() ===
+                        this.cards[i].getInfantryType() &&
+                    cards[i].getTerritoryName() ===
+                        this.cards[i].getTerritoryName()
                 ) {
                     this.cards.splice(i, 1);
-                    i = -1;
-                    continue redoLoop;
                 }
             }
         }
-        this.noOfCards -= 3;
     }
 
     getView() {
@@ -151,8 +143,9 @@ class Player {
             CardBorder,
             {
                 style: {
-                    backgroundColor: `${this.isPlayerTurn ? "#d9b51c" : "white"
-                        }`,
+                    backgroundColor: `${
+                        this.isPlayerTurn ? "#d9b51c" : "white"
+                    }`,
                 },
                 key: this.id,
             },

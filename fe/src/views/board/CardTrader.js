@@ -6,38 +6,25 @@ import {
 } from "../../config/gameConstants";
 
 class CardTrader {
-    constructor(savedTrader = null) {
-        if (savedTrader) {
-            this.noOfPreviousTrades = savedTrader.noOfPreviousTrades;
-            this.noOfTroopsGivenInPreviousTrade = savedTrader.noOfTroopsGivenInPreviousTrade;
-        } else {
-            this.noOfPreviousTrades = 0;
-            this.noOfTroopsGivenInPreviousTrade = 0;
-        }
+    constructor() {
+        this.noOfPreviousTrades = 0;
+        this.noOfTroopsGivenInPreviousTrade = 0;
     }
 
     setNoOfPreviousTrades(noOfPreviousTrades) {
         this.noOfPreviousTrades = noOfPreviousTrades;
     }
 
-    getAsJson() {
-        var result = {};
-        result.noOfPreviousTrades = this.noOfPreviousTrades;
-        result.noOfTroopsGivenInPreviousTrade = this.noOfTroopsGivenInPreviousTrade;
-        return result;
-    }
-
     tradeCards(cards) {
         if (this.checkIfTradeValid(cards)) {
-            console.log("trading");
             if (this.noOfPreviousTrades < NUMBER_OF_TRADES_SET) {
-                this.noOfPreviousTrades++;
                 this.noOfTroopsGivenInPreviousTrade =
                     2 * this.noOfPreviousTrades + 2;
+                this.noOfPreviousTrades++;
                 return this.noOfTroopsGivenInPreviousTrade;
             } else {
-                this.noOfPreviousTrades++;
                 this.noOfTroopsGivenInPreviousTrade += 5;
+                this.noOfPreviousTrades++;
                 return this.noOfTroopsGivenInPreviousTrade;
             }
         }
@@ -51,7 +38,7 @@ class CardTrader {
         if (this.checkIfCards1OfEachDesign(cards)) {
             return true;
         }
-        if (this.checkIfWildCardTrade(cards)) {
+        if (this.checkIfWildCardTrade(cards)){ 
             return true;
         }
         return false;
@@ -118,7 +105,7 @@ class CardTrader {
         return false;
     }
 
-
+    
 }
 
 export default CardTrader;
