@@ -48,40 +48,44 @@ class Board extends Component {
             cardsTrade: false,
         };
 
+        this.initializeGamePlay = this.initializeGamePlay.bind(this);
+        this.getAsJson = this.getAsJson.bind(this);
+        this.saveGame = this.saveGame.bind(this);
+        this.toggleSaveGameModal = this.toggleSaveGameModal.bind(this);
+
         this.initializeGamePlay();
     }
 
     initializeGamePlay = () => {
         if (this.props.history.location.state.savedGame) {
             var gameData = this.props.history.location.state.savedGame.gameData;
+            this.state = gameData.boardState;
             this.allPlayers = [];
+            this.cardsDeck = new CardDeck(gameData.cardsDeck);
+            this.cardsTrader = new CardTrader(gameData.cardsTrader);
             this.initializePlayers(gameData);
             this.map = new Map(this.allPlayers, gameData);
+            this.playerTurnDecider = new PlayerTurnDecider(this.allPlayers, true);
+            this.deploymentStrategy = new DeploymentContext(this.state.initialSetupPhase ? new InitialDeployment() : new TurnsDeployment());
         } else {
             this.allPlayers = [];
             this.initializePlayers();
             this.map = new Map(this.allPlayers);
+            this.playerTurnDecider = new PlayerTurnDecider(this.allPlayers);
+            this.allPlayers[0].setIsPlayerTurn(true);
+            this.deploymentStrategy = new DeploymentContext(new InitialDeployment());
+            this.cardsDeck = new CardDeck();
+            this.cardsTrader = new CardTrader();
         }
         this.countryIds = Object.values(COUNTRIES).map(
             (country) => country.value
         );
-        this.playerTurnDecider = new PlayerTurnDecider(this.allPlayers);
-        if (!this.props.history.location.state.savedGame) {
-            this.allPlayers[0].setIsPlayerTurn(true);
-        }
+
         this.troopsGiver = new TroopsGiver(
             this.map.getCountries(),
             this.map.getContinents()
         );
 
-        this.cardsDeck = new CardDeck();
-        this.cardsTrader = new CardTrader();
-
-        this.getAsJson = this.getAsJson.bind(this);
-        this.saveGame = this.saveGame.bind(this);
-        this.toggleSaveGameModal = this.toggleSaveGameModal.bind(this);
-
-        this.deploymentStrategy = new DeploymentContext(new InitialDeployment());
     }
 
     componentDidMount() {
@@ -101,7 +105,7 @@ class Board extends Component {
         
         return (
             <BoardContainer>
-                <CardSlidingPane 
+                <CardSlidingPane
                     title={this.playerTurnDecider.getCurrentPlayerInfo().getName() + " Cards"}
                     showCards={showCards}
                     onClose={() => this.setState({ showCards: false, tradeCard: false })}
@@ -110,7 +114,7 @@ class Board extends Component {
                     onTradeButtonClick={this.tradeCard}
                     currentPlayerSelectedCards={currentPlayerSelectedCards}
                 />
-                <CardContainer><StyledCardsIcon onClick={() => this.setState({ showCards: !showCards, tradeCard: true, }) } /></CardContainer>
+                <CardContainer><StyledCardsIcon onClick={() => this.setState({ showCards: !showCards, tradeCard: true, })} /></CardContainer>
                 <ContinentsTroopTable />
                 <MapContainer>
                     <InnerContainer>{this.allPlayers.map((player) => player.getView())}</InnerContainer>
@@ -159,7 +163,7 @@ class Board extends Component {
                             break;
                         }
                     }
-                    alert.success(this.playerTurnDecider.getCurrentPlayerInfo().getName() +" received a card.");
+                    alert.success(this.playerTurnDecider.getCurrentPlayerInfo().getName() + " received a card.");
                 } else {
                     alert.error("No cards left to give.");
                 }
@@ -178,7 +182,7 @@ class Board extends Component {
         if (this.deploymentStrategy.deployTroops(this.map, this.playerTurnDecider, selectedCountryId, this.troopsGiver, this.cardsDeck, alert, (newState) => this.setState(newState))) {
             this.forceUpdate();
             this.deploymentStrategy.setStrategy(new TurnsDeployment());
-        }        
+        }
     };
 
     deployTurnTroops = () => {
@@ -195,11 +199,11 @@ class Board extends Component {
                 JSON.stringify(currentPlayerSelectedCards[i]) ===
                 JSON.stringify(card)
             ) {
-                currentPlayerSelectedCards.splice(i,1);
+                currentPlayerSelectedCards.splice(i, 1);
                 return false;
             }
         }
-        if(currentPlayerSelectedCards.length < 3){
+        if (currentPlayerSelectedCards.length < 3) {
             currentPlayerSelectedCards.push(card);
         }
         this.setState({ currentPlayerSelectedCards: currentPlayerSelectedCards });
@@ -215,7 +219,7 @@ class Board extends Component {
             let tempTroops = currentPlayer.getRemainingTroops();
             currentPlayer.setRemainingTroops(
                 currentPlayer.getRemainingTroops() +
-                    this.cardsTrader.tradeCards(currentPlayerSelectedCards)
+                this.cardsTrader.tradeCards(currentPlayerSelectedCards)
             );
             if (currentPlayer.getRemainingTroops() > tempTroops) {
                 currentPlayer.setNumOfCardTrades(
@@ -223,8 +227,8 @@ class Board extends Component {
                 );
                 currentPlayer.removeCards(currentPlayerSelectedCards);
                 tempTroops = 0;
-            
-                this.setState({ cardsTrade: true, currentPlayerSelectedCards:[]});
+
+                this.setState({ cardsTrade: true, currentPlayerSelectedCards: [] });
                 this.forceUpdate();
             }
         }
@@ -234,14 +238,22 @@ class Board extends Component {
         if (gameData) {
             const { players } = gameData;
             players.forEach((playerJson) => {
+                // cards, diceRoll, noOfCards, numOfCardTrades
                 let player = new Player(
                     playerJson.name,
                     playerJson.id,
                     playerJson.remainingTroops,
                     playerJson.color,
                     playerJson.isPlayerTurn,
-                    playerJson.playerTurnNumber
+                    playerJson.playerTurnNumber,
+                    playerJson.diceRoll,
+                    playerJson.noOfCards,
+                    playerJson.numOfCardTrades
                 );
+                playerJson.cards.forEach(cardJson => {
+                    var card = this.cardsDeck.getCard(cardJson);
+                    player.addCard(card);
+                })
                 player.setDiceRoll(players.length);
                 this.allPlayers.push(player);
             });
@@ -264,10 +276,10 @@ class Board extends Component {
             (a, b) => b.getDiceRoll() - a.getDiceRoll()
         );
     };
- 
+
     // Only called when turns phase is started
-    endTurnForPlayer = (shouldValidatePlayerTroops) => {
-        if (this.playerTurnDecider.endTurnForPlayer(shouldValidatePlayerTroops)) {
+    endTurnForPlayer = () => {
+        if (this.playerTurnDecider.endTurnForPlayer(true)) {
             this.troopsGiver.giveTroopsToPlayer(this.playerTurnDecider.getPlayerWithTurn());
             this.setState({
                 attackOrSkipTurnPhase: false,
@@ -359,7 +371,8 @@ class Board extends Component {
     endTurnButtonRenderer = () => {
         const { initialSetupPhase } = this.state;
 
-        const remainingPlayerTroops =  this.playerTurnDecider.getCurrentPlayerInfo().getRemainingTroops();
+        const remainingPlayerTroops = this.playerTurnDecider.getCurrentPlayerInfo().getRemainingTroops();
+        console.log("the remaining troops are: ", remainingPlayerTroops, "and the setupPhase is: ", initialSetupPhase);
         if (!initialSetupPhase && remainingPlayerTroops === 0) {
             return <EndButton onClick={() => {
                 this.endTurnForPlayer(true)
@@ -383,10 +396,15 @@ class Board extends Component {
                         }
                     />
                     <ActionButton onClick={() => {
+<<<<<<< HEAD
                             this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops, alert);
                         }}
+=======
+                        this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops);
+                    }}
+>>>>>>> cc3b640 (fix: fixed saved games cards system)
                     >Maneuver</ActionButton>
-            </>
+                </>
             );
         }
         return null;
@@ -395,7 +413,7 @@ class Board extends Component {
     attackButtonRenderer = () => {
         const { initialSetupPhase } = this.state;
 
-        const remainingPlayerTroops =  this.playerTurnDecider.getCurrentPlayerInfo().getRemainingTroops();
+        const remainingPlayerTroops = this.playerTurnDecider.getCurrentPlayerInfo().getRemainingTroops();
         if (!initialSetupPhase && remainingPlayerTroops === 0) {
             return <ActionButton onClick={this.attackTerritory}>Attack</ActionButton>
         }
@@ -403,15 +421,21 @@ class Board extends Component {
     }
 
     attackInputFieldsRenderer = () => {
+<<<<<<< HEAD
         const { numOfAttackerTroops, numOfDefenderTroops, attackState, cardsTrade } = this.state;
         
         if (!cardsTrade && attackState) 
+=======
+        const { numOfAttackerTroops, numOfDefenderTroops, attackState, selectedCountryId } = this.state;
+
+        if (selectedCountryId && attackState)
+>>>>>>> cc3b640 (fix: fixed saved games cards system)
             return (
                 <>
                     <AttackerTroopsInput value={numOfAttackerTroops} onChange={(e) => this.validateInput(e, "numOfAttackerTroops")}
                         style={{ zIndex: attackState ? "1000" : "-1" }}
                     />
-                    <DefenderTroopsInput value={numOfDefenderTroops} onChange={(e) => this.validateInput(e, "numOfDefenderTroops") }
+                    <DefenderTroopsInput value={numOfDefenderTroops} onChange={(e) => this.validateInput(e, "numOfDefenderTroops")}
                         style={{ zIndex: attackState ? "1000" : "-1" }}
                     />
                 </>
@@ -443,8 +467,12 @@ class Board extends Component {
     // Save Game Logic Methods
     getAsJson() {
         var result = {};
+        result.boardState = this.state
+        result.boardState.showSaveModal = false;
         result.players = this.allPlayers;
         result.map = this.map.getAsJson();
+        result.cardsDeck = this.cardsDeck.getAsJson();
+        result.cardsTrader = this.cardsDeck.getAsJson();
         return result;
     }
 

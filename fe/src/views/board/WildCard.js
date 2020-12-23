@@ -1,3 +1,4 @@
+import { result } from "lodash";
 import React from "react";
 import styled from "styled-components";
 import { CARD_TYPES } from "../../config/gameConstants";
@@ -5,12 +6,19 @@ import { BREAKPOINTS } from "../../config/gameConstants";
 import Card from "./Card";
 
 class WildCard extends Card {
-  constructor(troop1, troop2, troop3) {
+  constructor(troop1, troop2, troop3, savedGame = null) {
     super();
-    this.troop1 = troop1;
-    this.troop2 = troop2;
-    this.troop3 = troop3;
-    this.cardType = CARD_TYPES.WildType.type;
+    if (savedGame) {
+      this.troop1 = savedGame.troop1;
+      this.troop2 = savedGame.troop2;
+      this.troop3 = savedGame.troop3;
+      this.cardType = savedGame.cardType;
+    } else {
+      this.troop1 = troop1;
+      this.troop2 = troop2;
+      this.troop3 = troop3;
+      this.cardType = CARD_TYPES.WildType.type;
+    }
   }
 
   getCardType() {
@@ -33,6 +41,15 @@ class WildCard extends Card {
       Troop2,
       Troop3,
     });
+  }
+
+  getAsJson() {
+    var result = {};
+    result.troop1 = this.troop1;
+    result.troop2 = this.troop2;
+    result.troop3 = this.troop3;
+    result.cardType = this.cardType;
+    return result;
   }
 }
 

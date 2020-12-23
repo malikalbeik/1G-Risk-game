@@ -7,17 +7,17 @@ import {
 } from "../../config/gameConstants";
 
 class Player {
-    constructor(name, id, remainingTroops, color, isPlayerTurn, turnNumber) {
+    constructor(name, id, remainingTroops, color, isPlayerTurn, turnNumber, diceRoll = null, noOfCards = 0, numOfCardTrades = 0) {
         this.name = name;
         this.id = id;
         this.remainingTroops = remainingTroops;
         this.color = color;
         this.isPlayerTurn = isPlayerTurn;
         this.turnNumber = turnNumber;
-        this.diceRoll = null;
+        this.diceRoll = diceRoll;
         this.cards = [];
-        this.numOfCardTrades = 0;
-        this.noOfCards = 0;
+        this.numOfCardTrades = numOfCardTrades;
+        this.noOfCards = noOfCards;
     }
 
     getId() {
@@ -114,9 +114,9 @@ class Player {
                 if (
                     this.cards[i].getCardType() === CARD_TYPES.TerritoryType.type &&
                     cards[j].getInfantaryType() ===
-                        this.cards[i].getInfantaryType() &&
+                    this.cards[i].getInfantaryType() &&
                     cards[j].getTerritoryName() ===
-                        this.cards[i].getTerritoryName()
+                    this.cards[i].getTerritoryName()
                 ) {
                     this.cards.splice(i, 1);
                     i = -1;
@@ -151,9 +151,8 @@ class Player {
             CardBorder,
             {
                 style: {
-                    backgroundColor: `${
-                        this.isPlayerTurn ? "#d9b51c" : "white"
-                    }`,
+                    backgroundColor: `${this.isPlayerTurn ? "#d9b51c" : "white"
+                        }`,
                 },
                 key: this.id,
             },
