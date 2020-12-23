@@ -95,11 +95,10 @@ class Board extends Component {
     }
 
     render() {
-        const { selectedCountryId, showCards, currentPlayerSelectedCards } = this.state;
+        const { selectedCountryId, showCards, currentPlayerSelectedCards, attackerDiceRolls, defenderDiceRolls } = this.state;
         if (!this.allPlayers) return null;
-
         const playerCards = this.playerTurnDecider.getCurrentPlayerInfo().getCards() || [];
-
+        
         return (
             <BoardContainer>
                 <CardSlidingPane 
@@ -123,6 +122,20 @@ class Board extends Component {
                     {this.endTurnButtonRenderer()}
                 </MapContainer>
                 {this.saveGameButtonsRenderer()}
+                <DiceRollsContainer>
+                    <AttackerDiceRollsContainer>
+                        Attacker's Rolls<br/>
+                        <span>
+                            {attackerDiceRolls && <span>{attackerDiceRolls.join(" | ")}</span>}
+                        </span>
+                    </AttackerDiceRollsContainer>
+                    <DefenderDiceRollsContainer>
+                        Defender's Rolls<br/>
+                        <span>
+                            {defenderDiceRolls && <span>{defenderDiceRolls.join(" | ")}</span>}
+                        </span>
+                    </DefenderDiceRollsContainer>
+                </DiceRollsContainer>
             </BoardContainer>
         );
     }
@@ -131,10 +144,11 @@ class Board extends Component {
     attackTerritory = () => {
         const { alert } = this.props;
         const { countryToAttackOrManeuverTo, selectedCountryId, numOfAttackerTroops, numOfDefenderTroops } = this.state;
-        const result = this.map.attackTerritory(countryToAttackOrManeuverTo, selectedCountryId, numOfAttackerTroops, numOfDefenderTroops);
+        const result = this.map.attackTerritory(countryToAttackOrManeuverTo, selectedCountryId, numOfAttackerTroops, numOfDefenderTroops, alert);
         if (typeof result === "object") {
             if (result.won && result.message === "TERRITORY_OCCUPIED") {
                 alert.success(this.playerTurnDecider.getCurrentPlayerInfo().getName() + " won.");
+                this.setState({ attackerDiceRolls: result.attackerDiceRolls, defenderDiceRolls: result.defenderDiceRolls });
                 const card = this.cardsDeck.getCard();
                 if (card) {
                     const currentPlayerId = this.playerTurnDecider.getCurrentPlayerInfo().getId();
@@ -284,6 +298,7 @@ class Board extends Component {
     };
 
     onDoubleClickListener = (e) => {
+        const { alert } = this.props;
         const { showCards, initialSetupPhase, turnsPhase, attackOrSkipTurnPhase, cardsTrade } = this.state;
 
         clearTimeout(this.timer);
@@ -325,7 +340,8 @@ class Board extends Component {
                 const result = this.map.validateInitialMove(
                     this.state.selectedCountryId,
                     this.state.countryToAttackOrManeuverTo,
-                    this.playerTurnDecider.getCurrentPlayerInfo()
+                    this.playerTurnDecider.getCurrentPlayerInfo(),
+                    alert
                 );
                 this.setState({
                     attackState: result === "ATTACK",
@@ -353,6 +369,7 @@ class Board extends Component {
     }
 
     maneuverInputFieldsRenderer = () => {
+        const { alert } = this.props
         const { maneuverState, numOfAttackerTroops, numOfDefenderTroops, selectedCountryId, countryToAttackOrManeuverTo } = this.state;
         if (maneuverState) {
             return (
@@ -364,7 +381,7 @@ class Board extends Component {
                         }
                     />
                     <ActionButton onClick={() => {
-                            this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops);
+                            this.map.attackTerritory(selectedCountryId, countryToAttackOrManeuverTo, numOfAttackerTroops, numOfDefenderTroops, alert);
                         }}
                     >Maneuver</ActionButton>
             </>
@@ -471,6 +488,38 @@ class Board extends Component {
     };
 
 }
+
+const DiceRollsContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 600px;
+    left: 100px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: white;
+`;
+
+const AttackerDiceRollsContainer = styled.div`
+    z-index: 1000;
+    width: fit-content;
+    height: fit-content;
+    span {
+        background-color: red;
+        color: white;
+    }
+`;
+
+const DefenderDiceRollsContainer = styled.div`
+    z-index: 1000;
+    width: fit-content;
+    height: fit-content;
+    span {
+        background-color: white;
+        color: red;
+    }  
+`;
 
 const CardContainer = styled.div`
     position: absolute;

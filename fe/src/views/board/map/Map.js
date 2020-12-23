@@ -102,7 +102,7 @@ class Map {
         return playerHasTroops;
     }
 
-    validateInitialMove(attackingCountryId, defendingCountryId, currentPlayer) {
+    validateInitialMove(attackingCountryId, defendingCountryId, currentPlayer, alert) {
         const result = this.countryIdsToNames(attackingCountryId, defendingCountryId);
         let attackingCountry, defendingCountry = null;
         if (result) {
@@ -115,20 +115,20 @@ class Map {
         // Check if player has no reserve 
         for (let i = 0; i < this.players.length; i++) {
             if (this.players[i].getRemainingTroops() !== 0) {
-                console.log(`${this.players[i].getName()} has troops that are to be deployed`);
+                alert.error(`${this.players[i].getName()} has troops that are to be deployed`);
                 return "";
             }
         }
 
         // Countries should be neighbours
         if (!this.areAttackingAndDefendingCountryNeighbours(attackingCountry, defendingCountry)) {
-            console.log("Origin and Target countries are not neighbours");
+            alert.error("Origin and Target countries are not neighbours");
             return "";
         }
 
         // Check if current player owns the territory
         if (currentPlayer.getId() !== attackingCountry.getOccupyingPlayerId()) {
-            console.log("Player does not own the territory he is trying to attack or maneuver from.");
+            alert.error("Player does not own the territory he is trying to attack or maneuver from.");
             return "";
         }
 
@@ -139,34 +139,34 @@ class Map {
         return "ATTACK";
     }
 
-    isAttackStateValid(attackingCountry, defendingCountry, numOfTroopsToAttackWith, numOfTroopsToDefendWith) {
+    isAttackStateValid(attackingCountry, defendingCountry, numOfTroopsToAttackWith, numOfTroopsToDefendWith, alert) {
         // Upto 3 troops can be used for attack
         if (numOfTroopsToAttackWith > 3) {
-            console.log("Cannot attacking with more than 3 troops");
+            alert.error("Cannot attacking with more than 3 troops");
             return false;
         }
 
         // Country with less than 2 troops cannot attack.
         if (attackingCountry.getNumberOfTroops() < 2) {
-            console.log("Country has less than 2 troops");
+            alert.error("Country has less than 2 troops");
             return false;
         }
 
         // Less troops in country than to attack with or player attacking with all troops not leaving 1 behind
         if (numOfTroopsToAttackWith >= attackingCountry.getNumberOfTroops()) {
-            console.log("Country has less troops than the number you want to attack with or you are attacking with all troops w/o leaving 1 behind");
+            alert.error("Country has less troops than the number you want to attack with or you are attacking with all troops w/o leaving 1 behind");
             return false;
         }
 
         // Cannot defend with more than 2 troops
         if (numOfTroopsToDefendWith > 2) {
-            console.log("Cannot defend with more than 2 troops");
+            alert.error("Cannot defend with more than 2 troops");
             return false;
         }
 
         // Defending country less troops than what they want to attack with
         if (numOfTroopsToDefendWith > defendingCountry.getNumberOfTroops()) {
-            console.log("Cannot defend with number of troops more than currently in the country");
+            alert.error("Cannot defend with number of troops more than currently in the country");
             return false;
         }
 
@@ -203,8 +203,7 @@ class Map {
         return this.getAttakingAndDefendingCountry(attackingCountryId, defendingCountryId);
     }
 
-    attackTerritory(attackingCountryId, defendingCountryId, numOfTroopsToAttackWith, numOfTroopsToDefendWith) {
-
+    attackTerritory(attackingCountryId, defendingCountryId, numOfTroopsToAttackWith, numOfTroopsToDefendWith, alert) {
         const result = this.countryIdsToNames(attackingCountryId, defendingCountryId);
         let attackingCountry, defendingCountry = null;
         if (result) {
@@ -214,10 +213,10 @@ class Map {
             return false;
         }
         if (attackingCountry.getOccupyingPlayerId() === defendingCountry.getOccupyingPlayerId()) {
-            return this.maneuverTroops(attackingCountryId, defendingCountryId, numOfTroopsToAttackWith);
+            return this.maneuverTroops(attackingCountryId, defendingCountryId, numOfTroopsToAttackWith, alert);
         }
         
-        // if (!this.isAttackStateValid(attackingCountry, defendingCountry, numOfTroopsToAttackWith, numOfTroopsToDefendWith)) {
+        // if (!this.isAttackStateValid(attackingCountry, defendingCountry, numOfTroopsToAttackWith, numOfTroopsToDefendWith, alert)) {
         //     return false;
         // }
 
@@ -263,7 +262,9 @@ class Map {
             defendingCountry.setNumberOfTroops(defendingCountry.getNumberOfTroops() - numOfTroopsToDefendWith);
             return {
                 won: false,
-                message: "ATTACK_LOST"
+                message: "ATTACK_LOST",
+                attackerDiceRolls,
+                defenderDiceRolls
             }
         }
         if (defendingCountry.getNumberOfTroops() === 0) {
@@ -272,7 +273,9 @@ class Map {
             attackingCountry.setNumberOfTroops(attackingCountry.getNumberOfTroops() - (numOfTroopsToAttackWith));
             return {
                 won: true,
-                message: "TERRITORY_OCCUPIED"
+                message: "TERRITORY_OCCUPIED",
+                attackerDiceRolls,
+                defenderDiceRolls
             }
         }
         return true;
@@ -284,26 +287,26 @@ class Map {
         return neighboursOfAttackingCountry.findIndex(neighbour => neighbour === defendingCountryId) !== -1;
     }
 
-    maneuverTroops(departingCountryId, destinationCountryId, numOfTroops) {
+    maneuverTroops(departingCountryId, destinationCountryId, numOfTroops, alert) {
         const [departingCountry, destinationCountry] = this.getAttakingAndDefendingCountry(departingCountryId, destinationCountryId);
 
         if (numOfTroops <= 0) {
-            console.log("Number of troops to maneuver not valid.");
+            alert.error("Number of troops to maneuver not valid.");
             return false;
         }
 
         if (departingCountry.getOccupyingPlayerId() !== destinationCountry.getOccupyingPlayerId()) {
-            console.log("Destination and Departing country have different occupying players.");
+            alert.error("Destination and Departing country have different occupying players.");
             return false;
         }
 
         if (departingCountry.getNumberOfTroops() <= numOfTroops) {
-            console.log("Departing country has less troops than you want to move.");
+            alert.error("Departing country has less troops than you want to move.");
             return false;
         }
 
         if (departingCountry.getNumberOfTroops() <= 1) {
-            console.log("Departing country has 1 toop only.");
+            alert.error("Departing country has 1 toop only.");
             return false;
         }
         departingCountry.setNumberOfTroops(departingCountry.getNumberOfTroops() - parseInt(numOfTroops));
