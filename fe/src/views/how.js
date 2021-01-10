@@ -17,7 +17,10 @@ class How extends Component {
                         <p>* To deploy troops double click on a non conquered country. </p>
                         <p>* To attack a country, single click on your country and double click on the country you want to attack. 
                             Two input fields will appear enter number of attacking troops not exceeding 3 and defending troops not exceeding 2
-                            and then click Attack. </p>
+                            and then reselect the attacking and defending country and click Attack. </p>
+                        <p>* To make sure a country to attack from or maneuver from is selected it will be highlighted in yellow. 
+                          If it is not then after putting the values for attacking troops, defending troops in Attack Phase or maneuvering troops then reclick on your country 
+                          and double click on the country to Attack or the country to maneuver to. </p>
                         <p>* To maneuver troops to another country, single click on your country and double click on the country you want to move troops to. 
                             One input field will appear, enter number of troops to maneuver leaving at least one behind. Then click Maneuver. </p>
                         <p>* For trading cardes, go to the slide panel and choose three cards (3 cards with same troop, 3  different cards, 3 wild cards) and press trade, 

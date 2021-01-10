@@ -74,6 +74,9 @@ class NavBar extends PureComponent {
                   <StyledNavLink href="/about" onClick={() => { this.close(); }}>About Us</StyledNavLink>
                 </NavItem>
                 <NavItem>
+                  <StyledNavLink href="/how" onClick={() => { this.close(); }}>How To Play</StyledNavLink>
+                </NavItem>
+                <NavItem>
                   <StyledNavLink href="/" onClick={() => { this.logout(); }}>Log out</StyledNavLink>
                 </NavItem>
               </Nav>
